@@ -66,6 +66,7 @@ static GtkWidget *pill_button(const char *label, const char *icon, GCallback cal
 }
 
 static void activate(GApplication *app, gpointer user_data) {
+    (void)user_data;
     FalizShell shell = {0};
     GtkCssProvider *css = gtk_css_provider_new();
     const char *css_path = g_file_test("/usr/share/faliz/faliz.css", G_FILE_TEST_EXISTS)
@@ -74,7 +75,7 @@ static void activate(GApplication *app, gpointer user_data) {
     gtk_style_context_add_provider_for_display(gdk_display_get_default(),
         GTK_STYLE_PROVIDER(css), GTK_STYLE_PROVIDER_PRIORITY_APPLICATION);
     g_object_unref(css);
-    GtkWidget *window = adw_application_window_new(ADW_APPLICATION(app));
+    GtkWidget *window = adw_application_window_new(GTK_APPLICATION(app));
     gtk_window_set_title(GTK_WINDOW(window), "FALIZ OS");
     gtk_window_set_default_size(GTK_WINDOW(window), 1280, 800);
     gtk_window_set_resizable(GTK_WINDOW(window), TRUE);
