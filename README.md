@@ -29,7 +29,7 @@ To build the live image after the host has the required packages:
 ./scripts/build-iso.sh
 ```
 
-The image builder never writes to a physical disk. It produces an ISO under `dist/`; installation to a disk is intentionally left to a future installer workflow with explicit user confirmation.
+The current live image target is Debian Bookworm on x86_64, selected because the installed live-build toolchain has first-class Debian support. The shell remains distribution-agnostic. The image builder never writes to a physical disk. It produces an ISO under `dist/`; installation to a disk is intentionally left to a future installer workflow with explicit user confirmation.
 
 ## Architecture
 

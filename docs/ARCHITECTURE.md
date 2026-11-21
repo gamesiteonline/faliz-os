@@ -2,7 +2,7 @@
 
 ## Foundation
 
-The first target is an Ubuntu Noble live image on x86_64. Mature components remain in place: Linux kernel, systemd, NetworkManager, PipeWire/WirePlumber, seatd, Wayland, Polkit, and Flatpak. FALIZ owns the shell, visual identity, default session configuration, and first-party applications.
+The first target is a Debian Bookworm live image on x86_64. Mature components remain in place: Linux kernel, systemd, NetworkManager, PipeWire/WirePlumber, seatd, Wayland, Polkit, and Flatpak. FALIZ owns the shell, visual identity, default session configuration, and first-party applications.
 
 ## Shell boundary
 

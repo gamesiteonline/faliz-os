@@ -13,7 +13,7 @@ cp "$ROOT/src/faliz-shell/faliz.css" "$BUILD/config/includes.chroot/usr/share/fa
 cp "$ROOT/packaging/systemd/faliz-shell.service" "$BUILD/config/includes.chroot/etc/systemd/user/faliz-shell.service"
 cp "$ROOT/packaging/live/faliz.list.chroot" "$BUILD/config/package-lists/faliz.list.chroot"
 cp "$ROOT/branding/faliz-logo.svg" "$BUILD/config/includes.chroot/usr/share/faliz/faliz-logo.svg"
-(cd "$BUILD" && lb config --distribution noble --architectures amd64 --binary-images iso-hybrid --archive-areas "main universe restricted multiverse" --apt-indices false)
+(cd "$BUILD" && lb config --distribution bookworm --architectures amd64 --binary-images iso-hybrid --archive-areas "main contrib non-free non-free-firmware" --mirror-bootstrap "http://deb.debian.org/debian/" --mirror-chroot "http://deb.debian.org/debian/" --mirror-binary "http://deb.debian.org/debian/" --security false --linux-packages "linux-image-amd64" --apt-indices none)
 (cd "$BUILD" && lb build)
 cp "$BUILD/live-image-amd64.hybrid.iso" "$DIST/faliz-os-live-amd64.iso"
 echo "Built $DIST/faliz-os-live-amd64.iso"

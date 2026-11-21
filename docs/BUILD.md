@@ -12,11 +12,13 @@ The graphical shell needs an active GTK/Wayland display. On a developer workstat
 
 ## Live ISO
 
-The image pipeline uses live-build and produces an x86_64 ISO-hybrid image. Run it from a machine with root privileges, network access, and at least 12 GB free space:
+The image pipeline targets Debian Bookworm and uses live-build to produce an x86_64 ISO-hybrid image. Run it from a machine with root privileges, network access, and at least 12 GB free space:
 
 ```bash
 ./scripts/build-iso.sh
 ```
+
+The live-build version available in the current sandbox is older than the repository metadata layout: it expects a removed `Contents-amd64.gz` index during kernel assembly. The source and pipeline are therefore validated, but an ISO should not be claimed until the builder is upgraded or run on a compatible Debian build host.
 
 ## QEMU smoke test
 
