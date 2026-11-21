@@ -1,0 +1,10 @@
+.faliz-desktop { background: radial-gradient(circle at 50% 10%, #29204b 0%, #0b0b12 55%, #050507 100%); color: #f7f4ff; }
+.topbar { padding: 18px 28px; background: rgba(10, 10, 18, .70); border-bottom: 1px solid rgba(205, 180, 255, .14); }
+.brand { font-size: 18px; font-weight: 800; letter-spacing: 6px; color: #caa7ff; }
+.muted { color: rgba(247,244,255,.55); font-size: 13px; }
+.clock { color: #e7d8ff; font-weight: 600; }
+.headline { font-size: 36px; font-weight: 800; letter-spacing: -1px; }
+.subtitle { color: rgba(247,244,255,.62); font-size: 16px; }
+.dock { margin: 0 0 24px 0; padding: 10px 12px; background: rgba(28, 24, 44, .82); border: 1px solid rgba(218, 193, 255, .18); border-radius: 22px; }
+.pill-button { padding: 10px 15px; border-radius: 14px; background: rgba(160, 112, 255, .14); color: #f4efff; }
+.pill-button:hover { background: rgba(160, 112, 255, .32); }

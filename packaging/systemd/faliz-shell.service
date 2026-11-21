@@ -1,0 +1,14 @@
+[Unit]
+Description=FALIZ Desktop Shell
+After=graphical-session.target
+PartOf=graphical-session.target
+
+[Service]
+Type=simple
+ExecStart=/usr/local/bin/faliz-shell
+Restart=on-failure
+RestartSec=2
+Environment=GDK_BACKEND=wayland
+
+[Install]
+WantedBy=graphical-session.target

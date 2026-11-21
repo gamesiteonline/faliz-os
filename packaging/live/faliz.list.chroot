@@ -1,0 +1,13 @@
+systemd-sysv
+network-manager
+pipewire
+wireplumber
+seatd
+libgtk-4-1
+libadwaita-1-0
+xwayland
+wayland-protocols
+kgx
+nautilus
+adwaita-icon-theme
+fonts-noto
