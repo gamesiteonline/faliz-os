@@ -1,15 +1,15 @@
 # FALIZ OS
 
-FALIZ OS is a Linux-based desktop operating system project by Fahad Mohamed. The project is designed around a stable Ubuntu foundation, Wayland, systemd, PipeWire, NetworkManager, Polkit, and Flatpak, with a native FALIZ desktop shell layered on top.
+FALIZ OS is a Linux-based desktop operating system project by Fahad Mohamed. The project is designed around a stable Debian foundation, Wayland, systemd, PipeWire, NetworkManager, Polkit, and Flatpak, with a native FALIZ desktop shell layered on top.
 
 ## Current milestone: Stage 2 / Stage 3 foundation
 
 This repository currently contains:
 
 - A native GTK4/Libadwaita FALIZ shell surface with a branded desktop, launcher, dock, clock, and real application launching.
-- A reproducible live-build configuration for an Ubuntu-based live ISO.
+- A reproducible live-build configuration for a Debian-based live ISO.
 - Systemd user-session integration for starting the shell.
-- Branding assets and architecture/build documentation.
+- Official FALIZ app-icon branding, desktop metadata, and architecture/build documentation.
 - Validation scripts for compiling the shell and checking the image toolchain.
 
 This is an active engineering foundation, not a claim that every item in the master specification is complete. The custom shell compositor, installer UX, hardware matrix, and full native application suite remain subsequent stages.

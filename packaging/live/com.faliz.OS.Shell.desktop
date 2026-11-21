@@ -1,0 +1,9 @@
+[Desktop Entry]
+Type=Application
+Name=FALIZ OS Shell
+Comment=FALIZ futuristic desktop shell
+Exec=/usr/local/bin/faliz-shell
+Icon=com.faliz.OS.Shell
+Terminal=false
+Categories=System;DesktopSettings;
+StartupWMClass=com.faliz.OS.Shell
