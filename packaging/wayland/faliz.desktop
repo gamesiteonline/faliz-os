@@ -1,0 +1,8 @@
+[Desktop Entry]
+Name=FALIZ Wayland
+Comment=FALIZ OS desktop session on sway
+Exec=sway
+TryExec=sway
+Type=Application
+DesktopNames=FALIZ
+X-GDM-SessionRegisters=true

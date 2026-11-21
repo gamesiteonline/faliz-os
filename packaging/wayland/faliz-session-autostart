@@ -1,0 +1,14 @@
+#!/bin/sh
+set -eu
+
+if command -v swaybg >/dev/null 2>&1; then
+  swaybg -c 0b0b12 &
+fi
+
+if command -v mako >/dev/null 2>&1 && ! pgrep -x mako >/dev/null 2>&1; then
+  mako &
+fi
+
+if ! pgrep -x faliz-shell >/dev/null 2>&1; then
+  /usr/local/bin/faliz-shell &
+fi

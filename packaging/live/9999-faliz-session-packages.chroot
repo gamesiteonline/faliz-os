@@ -1,0 +1,6 @@
+#!/bin/sh
+set -eu
+
+# live-build installs temporary ISO tooling late in the build and may run
+# autoremove. Keep the actual FALIZ desktop session packages manual.
+apt-mark manual sway swaybg mako-notifier xdg-desktop-portal-gtk dbus-user-session policykit-1 flatpak

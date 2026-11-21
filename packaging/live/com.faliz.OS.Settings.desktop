@@ -1,0 +1,8 @@
+[Desktop Entry]
+Type=Application
+Name=FALIZ Settings
+Comment=Configure the FALIZ desktop session
+Exec=/usr/local/bin/faliz-settings
+Icon=preferences-system
+Terminal=false
+Categories=Settings;DesktopSettings;

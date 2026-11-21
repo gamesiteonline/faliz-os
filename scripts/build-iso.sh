@@ -3,19 +3,33 @@ set -euo pipefail
 ROOT=$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)
 BUILD="$ROOT/.build/live"
 DIST="$ROOT/dist"
+BUILD_ID="${FALIZ_BUILD_ID:-02}"
+ISO_NAME="faliz-os-build-${BUILD_ID}-live-amd64.iso"
 mkdir -p "$DIST"
 for tool in lb debootstrap xorriso cpio isohybrid; do command -v "$tool" >/dev/null || { echo "missing required tool: $tool" >&2; exit 1; }; done
 (cd "$ROOT/src/faliz-shell" && make)
 rm -rf "$BUILD"
-mkdir -p "$BUILD/config/package-lists" "$BUILD/config/includes.chroot/usr/bin" "$BUILD/config/includes.chroot/usr/local/bin" "$BUILD/config/includes.chroot/usr/share/applications" "$BUILD/config/includes.chroot/usr/share/icons/hicolor/2048x2048/apps" "$BUILD/config/includes.chroot/etc/systemd/user" "$BUILD/config/includes.chroot/usr/share/faliz"
+mkdir -p "$BUILD/config/package-lists" "$BUILD/config/hooks" "$BUILD/config/includes.chroot/usr/bin" "$BUILD/config/includes.chroot/usr/local/bin" "$BUILD/config/includes.chroot/usr/share/applications" "$BUILD/config/includes.chroot/usr/share/icons/hicolor/2048x2048/apps" "$BUILD/config/includes.chroot/etc/systemd/user" "$BUILD/config/includes.chroot/etc/profile.d" "$BUILD/config/includes.chroot/etc/sway" "$BUILD/config/includes.chroot/usr/share/wayland-sessions" "$BUILD/config/includes.chroot/usr/share/faliz"
 cp "$ROOT/src/faliz-shell/faliz-shell" "$BUILD/config/includes.chroot/usr/local/bin/faliz-shell"
+cp "$ROOT/src/faliz-shell/faliz-settings" "$BUILD/config/includes.chroot/usr/local/bin/faliz-settings"
 cp "$ROOT/src/faliz-shell/faliz.css" "$BUILD/config/includes.chroot/usr/share/faliz/faliz.css"
 cp "$ROOT/packaging/systemd/faliz-shell.service" "$BUILD/config/includes.chroot/etc/systemd/user/faliz-shell.service"
+cp "$ROOT/packaging/systemd/faliz-session-environment.sh" "$BUILD/config/includes.chroot/etc/profile.d/faliz-session-environment.sh"
 cp "$ROOT/packaging/live/faliz.list.chroot" "$BUILD/config/package-lists/faliz.list.chroot"
+cp "$ROOT/packaging/live/9999-faliz-session-packages.chroot" "$BUILD/config/hooks/9999-faliz-session-packages.chroot"
+chmod 0755 "$BUILD/config/hooks/9999-faliz-session-packages.chroot"
 cp "$ROOT/packaging/live/com.faliz.OS.Shell.desktop" "$BUILD/config/includes.chroot/usr/share/applications/com.faliz.OS.Shell.desktop"
+cp "$ROOT/packaging/live/com.faliz.OS.Settings.desktop" "$BUILD/config/includes.chroot/usr/share/applications/com.faliz.OS.Settings.desktop"
+cp "$ROOT/packaging/wayland/faliz.desktop" "$BUILD/config/includes.chroot/usr/share/wayland-sessions/faliz.desktop"
+cp "$ROOT/packaging/wayland/sway.conf" "$BUILD/config/includes.chroot/etc/sway/config"
+cp "$ROOT/packaging/wayland/faliz-session-autostart" "$BUILD/config/includes.chroot/usr/local/bin/faliz-session-autostart"
+chmod 0755 "$BUILD/config/includes.chroot/etc/profile.d/faliz-session-environment.sh" "$BUILD/config/includes.chroot/usr/local/bin/faliz-session-autostart"
 cp "$ROOT/branding/faliz-logo.svg" "$BUILD/config/includes.chroot/usr/share/faliz/faliz-logo.svg"
 cp "$ROOT/branding/faliz-app-icon.png" "$BUILD/config/includes.chroot/usr/share/icons/hicolor/2048x2048/apps/com.faliz.OS.Shell.png"
-(cd "$BUILD" && lb config --distribution bookworm --architectures amd64 --binary-images iso-hybrid --archive-areas "main contrib non-free non-free-firmware" --mirror-bootstrap "http://deb.debian.org/debian/" --mirror-chroot "http://deb.debian.org/debian/" --mirror-binary "http://deb.debian.org/debian/" --security false --firmware-chroot false --linux-packages "linux-image" --linux-flavours "amd64" --apt-indices none)
+# Use systemd for the live session: the native FALIZ shell already provides a
+# systemd user service, and Debian's sysvinit live pass removes sway during
+# its package transition.
+(cd "$BUILD" && lb config --distribution bookworm --architectures amd64 --binary-images iso-hybrid --archive-areas "main contrib non-free non-free-firmware" --mirror-bootstrap "http://deb.debian.org/debian/" --mirror-chroot "http://deb.debian.org/debian/" --mirror-binary "http://deb.debian.org/debian/" --security false --firmware-chroot false --linux-packages "linux-image" --linux-flavours "amd64" --initsystem systemd --apt-indices none)
 mkdir -p "$BUILD/config/bootloaders/isolinux"
 cp -a /usr/share/live/build/bootloaders/isolinux/. "$BUILD/config/bootloaders/isolinux/"
 rm -f "$BUILD/config/bootloaders/isolinux/isolinux.bin" "$BUILD/config/bootloaders/isolinux/vesamenu.c32"
@@ -56,5 +70,5 @@ exec /usr/bin/rsvg-convert "$@"
 EOF
 chmod 0755 "$BUILD/config/includes.chroot/usr/bin/rsvg"
 (cd "$BUILD" && lb build)
-cp "$BUILD/binary.hybrid.iso" "$DIST/faliz-os-live-amd64.iso"
-echo "Built $DIST/faliz-os-live-amd64.iso"
+cp "$BUILD/binary.hybrid.iso" "$DIST/$ISO_NAME"
+echo "Built $DIST/$ISO_NAME"

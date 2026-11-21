@@ -504,3 +504,86 @@ qemu-system-x86_64 \
 ```
 
 If KVM is unavailable, remove `-enable-kvm`. Hardware compatibility must still be tested separately on physical systems.
+
+
+## 17. BUILD 02 final status — 2026-11-22
+
+BUILD 02 is a distinct, bootable Debian Bookworm x86_64 ISO that advances FALIZ from the BUILD 01 shell foundation to a real Wayland desktop-session foundation.
+
+Final ISO:
+
+```text
+/home/ubuntu/faliz-os/dist/faliz-os-build-02-live-amd64.iso
+```
+
+Size: `1,145,044,992 bytes`
+
+Final SHA-256:
+
+```text
+0399074963601e3e09959235b0ccb2baa6582fb617e49bf3963a8dfb9849da85
+```
+
+Checksum file:
+
+```text
+/home/ubuntu/faliz-os/dist/faliz-os-build-02-live-amd64.iso.sha256
+```
+
+The ISO is ISO 9660 bootable media with an El Torito BIOS entry at `/isolinux/isolinux.bin`, an isohybrid MBR, and a SquashFS live filesystem. The final SquashFS inspection confirmed these required payloads:
+
+```text
+/usr/bin/sway
+/usr/bin/swaymsg
+/usr/bin/swaynag
+/etc/sway/config
+/usr/share/wayland-sessions/faliz.desktop
+/usr/local/bin/faliz-shell
+/usr/local/bin/faliz-settings
+/usr/local/bin/faliz-session-autostart
+/usr/share/applications/com.faliz.OS.Shell.desktop
+/usr/share/applications/com.faliz.OS.Settings.desktop
+/usr/share/faliz/faliz-logo.svg
+/usr/share/icons/hicolor/2048x2048/apps/com.faliz.OS.Shell.png
+```
+
+The build uses Debian's packaged `sway` compositor. The live-build pipeline selects systemd because the sysvinit live transition removed sway during package setup; this also matches the existing FALIZ systemd user-session integration.
+
+### BUILD 02 completed and verified
+
+- Real Debian Bookworm `sway` Wayland compositor payload.
+- FALIZ Wayland session desktop entry and sway configuration.
+- Four real virtual workspaces with switching and window-movement shortcuts.
+- Tiling, floating, fullscreen, reload, and exit window-management bindings.
+- Native GTK4/Libadwaita FALIZ shell.
+- Functional launcher popover with Files, Terminal, Browser, and Settings entries.
+- Animated floating dock styling with application icons and tooltips.
+- Toast notifications for shell actions.
+- Dark/light theme switch.
+- Live clock, status bar, workspace controls, and Wayland status indicator.
+- Native FALIZ Settings application with Appearance and System pages.
+- Settings controls/status for theme, animation, wallpaper, sway, workspaces, NetworkManager, PipeWire/WirePlumber, Polkit, and Flatpak.
+- Mako notification daemon, swaybg wallpaper startup, and FALIZ session autostart helper.
+- Custom FALIZ branding, application desktop entries, icon, and boot splash asset.
+- Final SquashFS payload inspection.
+- Native validation: `FALIZ validation passed`.
+- SHA-256 verification: `OK`.
+- QEMU software-emulation smoke test: process remained running for 30 seconds and exited with the expected timeout (`qemu_exit=124`). KVM was unavailable in the sandbox, so no KVM claim is made.
+- BUILD 01 remains preserved at `dist/build-01/faliz-os-live-amd64.iso`.
+
+Screenshots:
+
+- `screenshots/faliz-build-02-shell.png`
+- `screenshots/faliz-build-02-settings.png`
+
+### BUILD 02 incomplete and not claimed
+
+- Dedicated FALIZ graphical login/display manager.
+- Lock screen.
+- First-time setup wizard.
+- Graphical installer, disk partitioning, user creation, or bootloader installation workflow.
+- Full native Files, Browser, Store, Gallery, Music, Video, Notes, Calculator, Calendar, and System Monitor application suite. BUILD 02 launches existing Files/Terminal/Browser integrations but does not claim all of these as native FALIZ applications.
+- Persistent settings backend for every displayed system control.
+- Hardware validation on physical BIOS/UEFI systems, VirtualBox, GPUs, Wi-Fi, Bluetooth, touchpads, suspend, power management, or external displays.
+- Complete networking, audio, shutdown, and installation acceptance testing on physical hardware.
+- Signed or reproducible release infrastructure.

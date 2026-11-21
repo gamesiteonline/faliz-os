@@ -12,3 +12,11 @@ nautilus
 adwaita-icon-theme
 fonts-noto
 syslinux-utils
+sway
+mako-notifier
+swaybg
+xdg-utils
+dbus-user-session
+policykit-1
+flatpak
+xdg-desktop-portal-gtk

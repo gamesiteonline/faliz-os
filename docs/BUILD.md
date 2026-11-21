@@ -37,3 +37,52 @@ If KVM is unavailable, remove `-enable-kvm`; the boot will be slower. A non-KVM 
 - ISO build script checks required tools and keeps all output in the repository.
 - ISO is bootable according to `file` and `xorriso`: it has an El Torito BIOS entry at `/isolinux/isolinux.bin` and an isohybrid MBR.
 - No deployment configuration includes environment variables with the `manus` prefix or name.
+
+
+## BUILD 02 final verification — 2026-11-22
+
+BUILD 02 is produced with:
+
+```bash
+cd /home/ubuntu/faliz-os
+sudo ./scripts/build-iso.sh
+```
+
+The stable output is:
+
+```text
+dist/faliz-os-build-02-live-amd64.iso
+```
+
+Final size: `1,145,044,992 bytes`
+
+Final SHA-256: `0399074963601e3e09959235b0ccb2baa6582fb617e49bf3963a8dfb9849da85`
+
+Verify the checksum with:
+
+```bash
+sha256sum -c dist/faliz-os-build-02-live-amd64.iso.sha256
+```
+
+The final ISO was identified by `file` as a bootable ISO 9660/DOS-MBR image. `xorriso` reported an El Torito BIOS boot entry using `/isolinux/isolinux.bin`, boot-info-table support, and an isohybrid-suitable image.
+
+The compressed live filesystem was extracted and verified to contain `/usr/bin/sway`, `/usr/bin/swaymsg`, `/usr/bin/swaynag`, `/etc/sway/config`, `/usr/share/wayland-sessions/faliz.desktop`, the native FALIZ shell and settings binaries, desktop entries, and branding assets.
+
+Native validation completed with:
+
+```text
+FALIZ OS shell BUILD 02 0.2.0
+FALIZ Settings BUILD 02 0.2.0
+FALIZ validation passed
+```
+
+A 30-second software-emulated QEMU smoke test kept the final ISO running until the expected timeout (`qemu_exit=124`). KVM was unavailable in the sandbox (`/dev/kvm` was not present), so this is recorded as a TCG/software boot smoke test rather than a KVM or hardware result.
+
+BUILD 02 screenshots are:
+
+```text
+screenshots/faliz-build-02-shell.png
+screenshots/faliz-build-02-settings.png
+```
+
+The BUILD 02 compositor is Debian Bookworm's `sway`, selected with the live-build `--initsystem systemd` option. This is intentional: the default sysvinit live transition removed sway after package installation, while systemd preserves the compositor and matches FALIZ's systemd user-session service.
