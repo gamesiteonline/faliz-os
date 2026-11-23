@@ -587,3 +587,36 @@ Screenshots:
 - Hardware validation on physical BIOS/UEFI systems, VirtualBox, GPUs, Wi-Fi, Bluetooth, touchpads, suspend, power management, or external displays.
 - Complete networking, audio, shutdown, and installation acceptance testing on physical hardware.
 - Signed or reproducible release infrastructure.
+
+
+## 18. BUILD 03 professional OS foundation — 2026-11-23
+
+The first BUILD 03 phase implements professional operating-system foundations while preserving BUILD 02. The session now packages Waybar for a top panel with workspaces, clock, network, audio, battery, tray, lock, and power indicators. It adds swaylock integration, NetworkManager connection editing, PipeWire volume control, and UDisks2 support.
+
+The image also includes two guarded command foundations. `faliz-installer --list` inventories disks, and `faliz-installer --dry-run --target DEVICE` explains a future installation without modifying storage. Installation refuses to run unless the exact target is repeated with `--confirm`, and even then the current foundation exits without changing disks because the graphical installer is not yet implemented. `faliz-update --check` is read-only; package changes require `faliz-update --apply --confirm`.
+
+FALIZ Settings now exposes lock screen, update manager, installer safety, and power-control status. Native shell and Settings version output is BUILD 03 `0.3.0`. Repository validation passes, and safety tests confirmed that mismatched installer confirmations are refused.
+
+This phase does not claim a complete login manager, graphical installer, partitioning, encryption, bootloader installation, full power dialog, or hardware-tested system tray. Those remain the next professional OS implementation steps before expanding the core application suite requested in the second phase.
+
+
+## 19. BUILD 03 core applications — started after the professional foundation
+
+The FALIZ launcher is now scrollable and includes a practical core suite: Calculator, Calendar, Notes, System Monitor, Screenshot, Software Store, Media Player, Archive Manager, Document Viewer, Image Viewer, Browser, Files, Terminal, and Settings. The BUILD 03 live manifest adds Firefox ESR, GNOME Calculator, Calendar, Text Editor, System Monitor, Screenshot, Software, File Roller, Evince, Eye of GNOME, VLC, LibreOffice Writer, Thunderbird, and GNOME Disk Utility.
+
+This is an honest integration milestone. The applications are maintained Debian programs launched through FALIZ, not yet separate first-party FALIZ-native replacements. Consistent FALIZ wrappers, file associations, settings integration, and first-party utilities remain the next application work.
+
+
+## 20. BUILD 03 final status — 2026-11-23
+
+BUILD 03 is a distinct bootable ISO that contains both the professional operating-system foundation and the first core application suite.
+
+```text
+ISO: /home/ubuntu/faliz-os/dist/faliz-os-build-03-live-amd64.iso
+Size: 1,564,475,392 bytes
+SHA-256: 655a34444c26e98732988cb89a98f1871a068809d6d92237288e0cfd58c53ecc
+```
+
+The final image contains a real Waybar panel, swaylock, NetworkManager connection editor, Pavucontrol, UDisks2, guarded installer/update foundations, Calculator, Calendar, Notes, System Monitor, Screenshot, Software Store, Media Player, Archive Manager, Document Viewer, Image Viewer, Firefox ESR, LibreOffice Writer, Thunderbird, and GNOME Disk Utility. Native validation, checksum verification, SquashFS inspection, and a 30-second software QEMU smoke test passed.
+
+The installer remains deliberately non-destructive and does not yet partition, format, encrypt, or install to a disk. A dedicated graphical login, full power dialog, persistent settings backend, first-party FALIZ-native replacements for every application, VirtualBox test, and physical hardware test are not claimed complete.

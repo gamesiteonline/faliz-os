@@ -1,0 +1,20 @@
+{
+  "layer": "top",
+  "position": "top",
+  "height": 34,
+  "modules-left": ["sway/workspaces"],
+  "modules-center": ["clock"],
+  "modules-right": ["network", "pulseaudio", "battery", "tray", "custom/lock", "custom/power"],
+  "sway/workspaces": {
+    "disable-scroll": true,
+    "all-outputs": true,
+    "format": "{name}"
+  },
+  "clock": { "format": "{:%a  %H:%M}", "tooltip-format": "{:%Y-%m-%d %H:%M:%S}" },
+  "network": { "format-wifi": "  {essid}", "format-ethernet": "󰈀  {ifname}", "format-disconnected": "󰤭  Offline", "tooltip-format": "{ifname}: {ipaddr}/{cidr}" },
+  "pulseaudio": { "format": "{icon}  {volume}%", "format-muted": "󰝟  Muted", "format-icons": ["󰕿", "󰖀", "󰕾"], "on-click": "pavucontrol" },
+  "battery": { "format": "{icon}  {capacity}%", "format-icons": ["󰁺", "󰁼", "󰁾", "󰂀", "󰁹"] },
+  "tray": { "spacing": 8 },
+  "custom/lock": { "format": "󰌾", "tooltip": true, "tooltip-format": "Lock screen", "on-click": "faliz-lock" },
+  "custom/power": { "format": "⏻", "tooltip": true, "tooltip-format": "Power options", "on-click": "systemctl poweroff" }
+}

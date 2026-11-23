@@ -65,6 +65,56 @@ static void launch_browser(GtkButton *button, gpointer user_data) {
     launch_uri(user_data, "https://www.example.com", "Browser");
 }
 
+static void launch_calculator(GtkButton *button, gpointer user_data) {
+    (void)button;
+    launch_command(user_data, "gnome-calculator", "Calculator");
+}
+
+static void launch_calendar(GtkButton *button, gpointer user_data) {
+    (void)button;
+    launch_command(user_data, "gnome-calendar", "Calendar");
+}
+
+static void launch_notes(GtkButton *button, gpointer user_data) {
+    (void)button;
+    launch_command(user_data, "gnome-text-editor", "Notes");
+}
+
+static void launch_monitor(GtkButton *button, gpointer user_data) {
+    (void)button;
+    launch_command(user_data, "gnome-system-monitor", "System Monitor");
+}
+
+static void launch_screenshot(GtkButton *button, gpointer user_data) {
+    (void)button;
+    launch_command(user_data, "gnome-screenshot -i", "Screenshot");
+}
+
+static void launch_store(GtkButton *button, gpointer user_data) {
+    (void)button;
+    launch_command(user_data, "gnome-software", "Software Store");
+}
+
+static void launch_media(GtkButton *button, gpointer user_data) {
+    (void)button;
+    launch_command(user_data, "vlc", "Media Player");
+}
+
+static void launch_archive(GtkButton *button, gpointer user_data) {
+    (void)button;
+    launch_command(user_data, "file-roller", "Archive Manager");
+}
+
+static void launch_documents(GtkButton *button, gpointer user_data) {
+    (void)button;
+    launch_command(user_data, "evince", "Document Viewer");
+}
+
+static void launch_images(GtkButton *button, gpointer user_data) {
+    (void)button;
+    launch_command(user_data, "eog", "Image Viewer");
+}
+
 static gboolean update_clock(gpointer user_data) {
     FalizShell *shell = user_data;
     GDateTime *now = g_date_time_new_now_local();
@@ -132,8 +182,22 @@ static GtkWidget *build_launcher(FalizShell *shell) {
     gtk_box_append(GTK_BOX(box), app_button("Terminal", "utilities-terminal-symbolic", G_CALLBACK(launch_terminal), shell));
     gtk_box_append(GTK_BOX(box), app_button("Browser", "web-browser-symbolic", G_CALLBACK(launch_browser), shell));
     gtk_box_append(GTK_BOX(box), app_button("Settings", "preferences-system-symbolic", G_CALLBACK(launch_settings), shell));
+    gtk_box_append(GTK_BOX(box), app_button("Calculator", "accessories-calculator-symbolic", G_CALLBACK(launch_calculator), shell));
+    gtk_box_append(GTK_BOX(box), app_button("Calendar", "x-office-calendar-symbolic", G_CALLBACK(launch_calendar), shell));
+    gtk_box_append(GTK_BOX(box), app_button("Notes", "accessories-text-editor-symbolic", G_CALLBACK(launch_notes), shell));
+    gtk_box_append(GTK_BOX(box), app_button("System Monitor", "utilities-system-monitor-symbolic", G_CALLBACK(launch_monitor), shell));
+    gtk_box_append(GTK_BOX(box), app_button("Screenshot", "camera-photo-symbolic", G_CALLBACK(launch_screenshot), shell));
+    gtk_box_append(GTK_BOX(box), app_button("Software Store", "system-software-install-symbolic", G_CALLBACK(launch_store), shell));
+    gtk_box_append(GTK_BOX(box), app_button("Media Player", "multimedia-player-symbolic", G_CALLBACK(launch_media), shell));
+    gtk_box_append(GTK_BOX(box), app_button("Archive Manager", "package-x-generic-symbolic", G_CALLBACK(launch_archive), shell));
+    gtk_box_append(GTK_BOX(box), app_button("Document Viewer", "x-office-document-symbolic", G_CALLBACK(launch_documents), shell));
+    gtk_box_append(GTK_BOX(box), app_button("Image Viewer", "image-x-generic-symbolic", G_CALLBACK(launch_images), shell));
     gtk_widget_add_css_class(box, "launcher-popover");
-    gtk_popover_set_child(GTK_POPOVER(popover), box);
+    GtkWidget *scroll = gtk_scrolled_window_new();
+    gtk_scrolled_window_set_min_content_height(GTK_SCROLLED_WINDOW(scroll), 420);
+    gtk_scrolled_window_set_max_content_height(GTK_SCROLLED_WINDOW(scroll), 560);
+    gtk_scrolled_window_set_child(GTK_SCROLLED_WINDOW(scroll), box);
+    gtk_popover_set_child(GTK_POPOVER(popover), scroll);
     return popover;
 }
 
@@ -239,7 +303,7 @@ static void activate(GApplication *app, gpointer user_data) {
 
 int main(int argc, char **argv) {
     if (argc > 1 && g_strcmp0(argv[1], "--version") == 0) {
-        g_print("FALIZ OS shell BUILD 02 0.2.0\n");
+        g_print("FALIZ OS shell BUILD 03 0.3.0\n");
         return 0;
     }
     AdwApplication *app = adw_application_new(APP_ID, G_APPLICATION_DEFAULT_FLAGS);

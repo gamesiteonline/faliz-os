@@ -3,15 +3,18 @@ set -euo pipefail
 ROOT=$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)
 BUILD="$ROOT/.build/live"
 DIST="$ROOT/dist"
-BUILD_ID="${FALIZ_BUILD_ID:-02}"
+BUILD_ID="${FALIZ_BUILD_ID:-03}"
 ISO_NAME="faliz-os-build-${BUILD_ID}-live-amd64.iso"
 mkdir -p "$DIST"
 for tool in lb debootstrap xorriso cpio isohybrid; do command -v "$tool" >/dev/null || { echo "missing required tool: $tool" >&2; exit 1; }; done
 (cd "$ROOT/src/faliz-shell" && make)
 rm -rf "$BUILD"
-mkdir -p "$BUILD/config/package-lists" "$BUILD/config/hooks" "$BUILD/config/includes.chroot/usr/bin" "$BUILD/config/includes.chroot/usr/local/bin" "$BUILD/config/includes.chroot/usr/share/applications" "$BUILD/config/includes.chroot/usr/share/icons/hicolor/2048x2048/apps" "$BUILD/config/includes.chroot/etc/systemd/user" "$BUILD/config/includes.chroot/etc/profile.d" "$BUILD/config/includes.chroot/etc/sway" "$BUILD/config/includes.chroot/usr/share/wayland-sessions" "$BUILD/config/includes.chroot/usr/share/faliz"
+mkdir -p "$BUILD/config/package-lists" "$BUILD/config/hooks" "$BUILD/config/includes.chroot/usr/bin" "$BUILD/config/includes.chroot/usr/local/bin" "$BUILD/config/includes.chroot/usr/share/applications" "$BUILD/config/includes.chroot/usr/share/icons/hicolor/2048x2048/apps" "$BUILD/config/includes.chroot/etc/systemd/user" "$BUILD/config/includes.chroot/etc/profile.d" "$BUILD/config/includes.chroot/etc/sway" "$BUILD/config/includes.chroot/etc/waybar" "$BUILD/config/includes.chroot/usr/share/wayland-sessions" "$BUILD/config/includes.chroot/usr/share/faliz"
 cp "$ROOT/src/faliz-shell/faliz-shell" "$BUILD/config/includes.chroot/usr/local/bin/faliz-shell"
 cp "$ROOT/src/faliz-shell/faliz-settings" "$BUILD/config/includes.chroot/usr/local/bin/faliz-settings"
+cp "$ROOT/packaging/live/faliz-installer" "$BUILD/config/includes.chroot/usr/local/bin/faliz-installer"
+cp "$ROOT/packaging/live/faliz-update" "$BUILD/config/includes.chroot/usr/local/bin/faliz-update"
+cp "$ROOT/packaging/live/faliz-lock" "$BUILD/config/includes.chroot/usr/local/bin/faliz-lock"
 cp "$ROOT/src/faliz-shell/faliz.css" "$BUILD/config/includes.chroot/usr/share/faliz/faliz.css"
 cp "$ROOT/packaging/systemd/faliz-shell.service" "$BUILD/config/includes.chroot/etc/systemd/user/faliz-shell.service"
 cp "$ROOT/packaging/systemd/faliz-session-environment.sh" "$BUILD/config/includes.chroot/etc/profile.d/faliz-session-environment.sh"
@@ -22,8 +25,10 @@ cp "$ROOT/packaging/live/com.faliz.OS.Shell.desktop" "$BUILD/config/includes.chr
 cp "$ROOT/packaging/live/com.faliz.OS.Settings.desktop" "$BUILD/config/includes.chroot/usr/share/applications/com.faliz.OS.Settings.desktop"
 cp "$ROOT/packaging/wayland/faliz.desktop" "$BUILD/config/includes.chroot/usr/share/wayland-sessions/faliz.desktop"
 cp "$ROOT/packaging/wayland/sway.conf" "$BUILD/config/includes.chroot/etc/sway/config"
+cp "$ROOT/packaging/wayland/waybar.jsonc" "$BUILD/config/includes.chroot/etc/waybar/config"
+cp "$ROOT/packaging/wayland/waybar.css" "$BUILD/config/includes.chroot/etc/waybar/style.css"
 cp "$ROOT/packaging/wayland/faliz-session-autostart" "$BUILD/config/includes.chroot/usr/local/bin/faliz-session-autostart"
-chmod 0755 "$BUILD/config/includes.chroot/etc/profile.d/faliz-session-environment.sh" "$BUILD/config/includes.chroot/usr/local/bin/faliz-session-autostart"
+chmod 0755 "$BUILD/config/includes.chroot/etc/profile.d/faliz-session-environment.sh" "$BUILD/config/includes.chroot/usr/local/bin/faliz-session-autostart" "$BUILD/config/includes.chroot/usr/local/bin/faliz-installer" "$BUILD/config/includes.chroot/usr/local/bin/faliz-update" "$BUILD/config/includes.chroot/usr/local/bin/faliz-lock"
 cp "$ROOT/branding/faliz-logo.svg" "$BUILD/config/includes.chroot/usr/share/faliz/faliz-logo.svg"
 cp "$ROOT/branding/faliz-app-icon.png" "$BUILD/config/includes.chroot/usr/share/icons/hicolor/2048x2048/apps/com.faliz.OS.Shell.png"
 # Use systemd for the live session: the native FALIZ shell already provides a

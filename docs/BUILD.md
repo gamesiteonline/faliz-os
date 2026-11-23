@@ -86,3 +86,45 @@ screenshots/faliz-build-02-settings.png
 ```
 
 The BUILD 02 compositor is Debian Bookworm's `sway`, selected with the live-build `--initsystem systemd` option. This is intentional: the default sysvinit live transition removed sway after package installation, while systemd preserves the compositor and matches FALIZ's systemd user-session service.
+
+
+## BUILD 03 professional OS foundation — in progress
+
+BUILD 03 extends the BUILD 02 Wayland session with the first professional operating-system functions:
+
+- Waybar top panel with workspaces, clock, network, PipeWire volume, battery, system tray, lock, and power controls.
+- Real `swaylock` integration through `/usr/local/bin/faliz-lock` and the `Mod+Escape` shortcut.
+- Network connection editor shortcut through NetworkManager.
+- PipeWire/PulseAudio control through `pavucontrol`.
+- UDisks2 support for future disk and removable-media management.
+- `faliz-installer` safety foundation with disk listing, dry-run mode, exact-target confirmation checks, and refusal of unimplemented destructive installation.
+- `faliz-update` foundation with read-only update checking and explicit confirmation for package changes.
+- FALIZ Settings visibility for lock screen, update manager, installer safety, and power controls.
+
+The native applications now report BUILD 03 version `0.3.0`, and repository validation passes. The installer has not been claimed as complete: no partition, filesystem, bootloader, or disk operation is implemented in this milestone.
+
+
+## BUILD 03 core application suite — in progress
+
+The second requested phase has started after the professional foundation. The FALIZ launcher is now scrollable and exposes maintained Debian applications for Calculator, Calendar, Notes, System Monitor, Screenshot, Software Store, Media Player, Archive Manager, Document Viewer, Image Viewer, Browser, Files, Terminal, and Settings. BUILD 03 also adds Firefox ESR, LibreOffice Writer, Thunderbird, disk utility, and the supporting desktop applications to the live package manifest.
+
+These applications are integrated launch targets rather than being falsely described as separately written FALIZ-native replacements. The next application milestone is to add FALIZ-specific wrappers, consistent settings, file associations, and first-party utility surfaces where the system applications do not provide the desired experience.
+
+
+## BUILD 03 final artifact verification — 2026-11-23
+
+The final BUILD 03 ISO is:
+
+```text
+/home/ubuntu/faliz-os/dist/faliz-os-build-03-live-amd64.iso
+```
+
+It is `1,564,475,392` bytes with SHA-256:
+
+```text
+655a34444c26e98732988cb89a98f1871a068809d6d92237288e0cfd58c53ecc
+```
+
+`file` and `xorriso` confirm a bootable ISO 9660 image with an El Torito BIOS entry and isohybrid MBR. SquashFS inspection confirmed sway, swaylock, Waybar, FALIZ lock/installer/update commands, and the core application payload. Firefox ESR is available through `/usr/bin/firefox-esr` and the disk utility through `/usr/bin/gnome-disks`.
+
+Native validation passed with BUILD 03 version output, checksum verification returned `OK`, and a software-emulated QEMU boot remained running for 30 seconds with the expected timeout (`qemu_exit=124`). KVM was unavailable in the sandbox.

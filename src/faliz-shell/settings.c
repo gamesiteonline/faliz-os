@@ -80,12 +80,29 @@ static void activate(GApplication *application, gpointer user_data) {
         adw_preferences_group_add(hardware, GTK_WIDGET(row));
     }
 
+    AdwPreferencesGroup *operations = ADW_PREFERENCES_GROUP(adw_preferences_group_new());
+    adw_preferences_group_set_title(operations, "Operations and safety");
+    adw_preferences_group_set_description(operations, "Professional system controls with explicit confirmation safeguards.");
+    adw_preferences_page_add(system, operations);
+    const char *operations_list[][2] = {
+        {"Lock screen", "swaylock protected session via Mod+Escape"},
+        {"Update manager", "Read-only update checks; apply requires confirmation"},
+        {"Installer", "Disk listing and dry-run foundation; no destructive actions"},
+        {"Power controls", "Systemd shutdown, restart, logout, and suspend integration"},
+    };
+    for (guint i = 0; i < G_N_ELEMENTS(operations_list); i++) {
+        AdwActionRow *row = ADW_ACTION_ROW(adw_action_row_new());
+        adw_preferences_row_set_title(ADW_PREFERENCES_ROW(row), operations_list[i][0]);
+        adw_action_row_set_subtitle(row, operations_list[i][1]);
+        adw_preferences_group_add(operations, GTK_WIDGET(row));
+    }
+
     gtk_window_present(GTK_WINDOW(window));
 }
 
 int main(int argc, char **argv) {
     if (argc > 1 && g_strcmp0(argv[1], "--version") == 0) {
-        g_print("FALIZ Settings BUILD 02 0.2.0\n");
+        g_print("FALIZ Settings BUILD 03 0.3.0\n");
         return 0;
     }
     AdwApplication *app = adw_application_new(APP_ID, G_APPLICATION_DEFAULT_FLAGS);

@@ -1,0 +1,42 @@
+#!/bin/sh
+set -eu
+
+usage() {
+  cat <<'EOF'
+FALIZ Installer foundation
+
+This BUILD 03 command is intentionally non-destructive by default.
+
+  faliz-installer --list
+  faliz-installer --dry-run --target /dev/sdX
+  faliz-installer --install --target /dev/sdX --confirm /dev/sdX
+
+The install mode is reserved for the future graphical installer and will
+refuse to operate unless the target and explicit confirmation match exactly.
+No disk is modified by this foundation command.
+EOF
+}
+
+case "${1:-}" in
+  --list)
+    lsblk -e7 -o NAME,SIZE,TYPE,FSTYPE,MOUNTPOINTS,MODEL
+    ;;
+  --dry-run)
+    [ "${2:-}" = "--target" ] && [ -n "${3:-}" ] || { usage >&2; exit 2; }
+    target=$3
+    printf 'DRY RUN: target=%s\n' "$target"
+    printf 'No partitions, filesystems, bootloaders, or disks will be changed.\n'
+    ;;
+  --install)
+    [ "${2:-}" = "--target" ] && [ -n "${3:-}" ] || { usage >&2; exit 2; }
+    target=$3
+    [ "${4:-}" = "--confirm" ] && [ "${5:-}" = "$target" ] || {
+      echo "Refusing installation: use --confirm with the exact target device." >&2
+      exit 3
+    }
+    echo "FALIZ graphical installer is not enabled in BUILD 03." >&2
+    echo "No disk was modified." >&2
+    exit 4
+    ;;
+  *) usage; exit 0 ;;
+esac
