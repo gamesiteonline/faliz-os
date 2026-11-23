@@ -139,7 +139,7 @@ static GtkWidget *build_launcher(FalizShell *shell) {
 
 static void activate(GApplication *app, gpointer user_data) {
     (void)user_data;
-    FalizShell shell = {0};
+    static FalizShell shell = {0};
     shell.active_workspace = 1;
 
     GtkCssProvider *css = gtk_css_provider_new();
