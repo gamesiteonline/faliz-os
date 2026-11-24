@@ -18,6 +18,16 @@ This repository currently contains:
 
 This is an active engineering foundation, not a claim that every item in the master specification is complete. The login screen, installer UX, hardware matrix, and full native application suite remain subsequent stages.
 
+## Download BUILD 03
+
+The verified Debian Bookworm amd64 live image is available from the [FALIZ OS BUILD 03 GitHub release](https://github.com/gamesiteonline/faliz-os/releases/tag/v0.3.0). Download the [ISO image](https://github.com/gamesiteonline/faliz-os/releases/download/v0.3.0/faliz-os-build-03-live-amd64.iso) and its [SHA-256 checksum](https://github.com/gamesiteonline/faliz-os/releases/download/v0.3.0/faliz-os-build-03-live-amd64.iso.sha256), then verify the image before writing it to USB:
+
+```bash
+sha256sum -c faliz-os-build-03-live-amd64.iso.sha256
+```
+
+The release notes document the verified features and the remaining implementation and hardware-validation limitations.
+
 ## Quick start
 
 ```bash
