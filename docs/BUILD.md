@@ -128,3 +128,18 @@ It is `1,564,475,392` bytes with SHA-256:
 `file` and `xorriso` confirm a bootable ISO 9660 image with an El Torito BIOS entry and isohybrid MBR. SquashFS inspection confirmed sway, swaylock, Waybar, FALIZ lock/installer/update commands, and the core application payload. Firefox ESR is available through `/usr/bin/firefox-esr` and the disk utility through `/usr/bin/gnome-disks`.
 
 Native validation passed with BUILD 03 version output, checksum verification returned `OK`, and a software-emulated QEMU boot remained running for 30 seconds with the expected timeout (`qemu_exit=124`). KVM was unavailable in the sandbox.
+
+
+## BUILD 03 professional polish and developer credits — 2026-11-23
+
+The FALIZ desktop received a visual polish pass with stronger top-bar hierarchy, deeper desktop/content panels, clearer focus-visible states, improved workspace buttons, refined dock shadows, better launcher scrolling, and professional keyboard accessibility styling.
+
+Settings now includes an About FALIZ page with clickable developer-credit rows for Threads, Reddit, Instagram, the WhatsApp channel, YouTube, and Google Play Games. The URLs are embedded in the final `/usr/local/bin/faliz-settings` binary and were verified from the final SquashFS.
+
+The polished BUILD 03 ISO checksum is:
+
+```text
+e90dd1947cd2e6dd5948de17906e8849052892ba79fd4710cf615e6db9d59ead
+```
+
+The final image remains bootable, checksum-valid, and passed the 30-second software-emulated QEMU smoke test. Native validation passed with BUILD 03 version output.

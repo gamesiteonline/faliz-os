@@ -8,22 +8,26 @@
   color: #1e1730;
 }
 .topbar {
-  padding: 16px 28px;
-  background: rgba(10, 10, 18, .74);
-  border-bottom: 1px solid rgba(205, 180, 255, .14);
+  padding: 14px 28px;
+  background: rgba(10, 10, 18, .82);
+  border-bottom: 1px solid rgba(205, 180, 255, .18);
+  box-shadow: 0 8px 28px rgba(0,0,0,.16);
 }
 .light-theme .topbar { background: rgba(255,255,255,.68); border-bottom-color: rgba(85,65,140,.16); }
 .brand { font-size: 18px; font-weight: 800; letter-spacing: 6px; color: #caa7ff; }
 .light-theme .brand { color: #7044c8; }
-.muted { color: rgba(247,244,255,.60); font-size: 13px; }
+.muted { color: rgba(247,244,255,.66); font-size: 13px; letter-spacing: .2px; }
 .light-theme .muted { color: rgba(30,23,48,.62); }
 .clock { color: #e7d8ff; font-weight: 600; }
 .light-theme .clock { color: #5232a4; }
-.workspace-bar { padding: 12px 0 0; }
-.workspace-button { min-width: 34px; min-height: 30px; border-radius: 10px; background: rgba(160,112,255,.12); color: #ded0ff; transition: background 180ms ease, transform 180ms ease; }
+.workspace-bar { padding: 14px 0 0; }
+.workspace-button { min-width: 36px; min-height: 32px; border-radius: 10px; background: rgba(160,112,255,.14); color: #ded0ff; transition: background 180ms ease, transform 180ms ease, box-shadow 180ms ease; }
 .workspace-button:hover { background: rgba(160,112,255,.38); transform: translateY(-2px); }
+.workspace-button:focus-visible { outline: 2px solid #d4b5ff; outline-offset: 2px; }
 .light-theme .workspace-button { color: #50329a; background: rgba(112,76,210,.12); }
 .content { transition: opacity 240ms ease; }
+.content-panel { min-width: 520px; padding: 42px 68px; border: 1px solid rgba(216,190,255,.10); border-radius: 28px; background: rgba(16,13,28,.18); box-shadow: 0 24px 70px rgba(0,0,0,.12); }
+.light-theme .content-panel { border-color: rgba(92,64,160,.10); background: rgba(255,255,255,.20); box-shadow: 0 24px 70px rgba(75,52,130,.08); }
 .headline { font-size: 36px; font-weight: 800; letter-spacing: -1px; }
 .subtitle { color: rgba(247,244,255,.66); font-size: 16px; }
 .light-theme .subtitle { color: rgba(30,23,48,.64); }
@@ -44,13 +48,16 @@
 .launcher-button { padding: 0 15px; }
 .dock-button { min-width: 42px; }
 .launcher-button:hover, .dock-button:hover { background: rgba(160,112,255,.34); transform: translateY(-3px); }
+.launcher-button:focus-visible, .dock-button:focus-visible, .theme-switch:focus-visible { outline: 2px solid #d4b5ff; outline-offset: 2px; }
 .light-theme .launcher-button, .light-theme .dock-button { color: #3b246e; background: rgba(112,76,210,.12); }
 .theme-switch { margin-left: 8px; }
 .launcher-popover { min-width: 250px; padding: 14px; background: #171322; }
 .launcher-heading { color: #caa7ff; font-weight: 800; padding: 4px 8px 10px; }
 .launcher-item { min-height: 42px; padding: 4px 8px; border-radius: 10px; color: #f4efff; }
 .launcher-item:hover { background: rgba(160,112,255,.24); }
+.launcher-item:focus-visible { outline: 2px solid #caa7ff; outline-offset: -2px; }
 .light-theme .launcher-popover { background: #fbf9ff; }
 .light-theme .launcher-heading { color: #7044c8; }
 .light-theme .launcher-item { color: #24183e; }
 .light-theme .launcher-item:hover { background: rgba(112,76,210,.14); }
+.scrollbar.vertical slider { min-width: 8px; border-radius: 8px; background: rgba(202,167,255,.45); }

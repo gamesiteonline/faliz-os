@@ -2,6 +2,17 @@
 
 #define APP_ID "com.faliz.OS.Settings"
 
+static void add_credit_row(AdwPreferencesGroup *group, const char *title,
+                           const char *uri, const char *subtitle) {
+    AdwActionRow *row = ADW_ACTION_ROW(adw_action_row_new());
+    adw_preferences_row_set_title(ADW_PREFERENCES_ROW(row), title);
+    adw_action_row_set_subtitle(row, subtitle);
+    GtkWidget *link = gtk_link_button_new_with_label(uri, "Open");
+    gtk_widget_set_valign(link, GTK_ALIGN_CENTER);
+    adw_action_row_add_suffix(row, link);
+    adw_preferences_group_add(group, GTK_WIDGET(row));
+}
+
 static void activate(GApplication *application, gpointer user_data) {
     (void)user_data;
     AdwPreferencesWindow *window = ADW_PREFERENCES_WINDOW(adw_preferences_window_new());
@@ -96,6 +107,31 @@ static void activate(GApplication *application, gpointer user_data) {
         adw_action_row_set_subtitle(row, operations_list[i][1]);
         adw_preferences_group_add(operations, GTK_WIDGET(row));
     }
+
+    AdwPreferencesPage *about = ADW_PREFERENCES_PAGE(adw_preferences_page_new());
+    adw_preferences_page_set_title(about, "About FALIZ");
+    adw_preferences_page_set_icon_name(about, "help-about-symbolic");
+    adw_preferences_window_add(window, about);
+
+    AdwPreferencesGroup *identity = ADW_PREFERENCES_GROUP(adw_preferences_group_new());
+    adw_preferences_group_set_title(identity, "FALIZ OS");
+    adw_preferences_group_set_description(identity, "A focused Debian-based desktop experience built with GTK4, Libadwaita, and Wayland.");
+    adw_preferences_page_add(about, identity);
+    AdwActionRow *version = ADW_ACTION_ROW(adw_action_row_new());
+    adw_preferences_row_set_title(ADW_PREFERENCES_ROW(version), "BUILD 03");
+    adw_action_row_set_subtitle(version, "Professional desktop foundation and core application suite");
+    adw_preferences_group_add(identity, GTK_WIDGET(version));
+
+    AdwPreferencesGroup *credits = ADW_PREFERENCES_GROUP(adw_preferences_group_new());
+    adw_preferences_group_set_title(credits, "Developer credits");
+    adw_preferences_group_set_description(credits, "Follow the developer and project community across these platforms.");
+    adw_preferences_page_add(about, credits);
+    add_credit_row(credits, "Threads", "https://www.threads.com/@ard.sing", "@ard.sing");
+    add_credit_row(credits, "Reddit", "https://www.reddit.com/u/gamesiteonline", "u/gamesiteonline");
+    add_credit_row(credits, "Instagram", "https://www.instagram.com/ard.sing", "@ard.sing");
+    add_credit_row(credits, "WhatsApp channel", "https://whatsapp.com/channel/0029VbChyDUI1rcht5jajL3q", "FALIZ and developer updates");
+    add_credit_row(credits, "YouTube", "https://youtube.com/@gamesiteonline?si=2qKZs5YUptHS6cTd", "@gamesiteonline");
+    add_credit_row(credits, "Google Play Games", "https://my.play/gamesiteonline", "gamesiteonline");
 
     gtk_window_present(GTK_WINDOW(window));
 }

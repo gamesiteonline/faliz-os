@@ -258,6 +258,7 @@ static void activate(GApplication *app, gpointer user_data) {
     }
 
     GtkWidget *content = gtk_box_new(GTK_ORIENTATION_VERTICAL, 18);
+    gtk_widget_add_css_class(content, "content-panel");
     gtk_widget_set_vexpand(content, TRUE);
     gtk_widget_set_valign(content, GTK_ALIGN_CENTER);
     gtk_widget_set_halign(content, GTK_ALIGN_CENTER);

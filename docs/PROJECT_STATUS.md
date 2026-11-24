@@ -620,3 +620,24 @@ SHA-256: 655a34444c26e98732988cb89a98f1871a068809d6d92237288e0cfd58c53ecc
 The final image contains a real Waybar panel, swaylock, NetworkManager connection editor, Pavucontrol, UDisks2, guarded installer/update foundations, Calculator, Calendar, Notes, System Monitor, Screenshot, Software Store, Media Player, Archive Manager, Document Viewer, Image Viewer, Firefox ESR, LibreOffice Writer, Thunderbird, and GNOME Disk Utility. Native validation, checksum verification, SquashFS inspection, and a 30-second software QEMU smoke test passed.
 
 The installer remains deliberately non-destructive and does not yet partition, format, encrypt, or install to a disk. A dedicated graphical login, full power dialog, persistent settings backend, first-party FALIZ-native replacements for every application, VirtualBox test, and physical hardware test are not claimed complete.
+
+
+## 21. BUILD 03 professional polish and credits — 2026-11-24
+
+The FALIZ desktop received a professional visual pass without replacing the existing Wayland foundation. The shell now has stronger top-bar hierarchy, deeper content-panel depth, clearer focus-visible states, refined workspace controls, improved dock shadows, better launcher scrolling, and a more consistent light/dark presentation.
+
+FALIZ Settings now includes an About FALIZ page with clickable Developer Credits rows for Threads, Reddit, Instagram, the WhatsApp channel, YouTube, and Google Play Games. The supplied URLs were confirmed in the final compiled `faliz-settings` binary inside the final ISO.
+
+The polished BUILD 03 image is:
+
+```text
+/home/ubuntu/faliz-os/dist/faliz-os-build-03-live-amd64.iso
+```
+
+Its final SHA-256 is:
+
+```text
+e90dd1947cd2e6dd5948de17906e8849052892ba79fd4710cf615e6db9d59ead
+```
+
+Native validation, ISO checksum validation, boot metadata inspection, SquashFS payload inspection, and the 30-second software-emulated QEMU smoke test passed. The project remains honest about incomplete graphical login, full installer, physical hardware testing, and first-party replacements for all integrated Debian applications.

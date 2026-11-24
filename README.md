@@ -2,7 +2,7 @@
 
 FALIZ OS is a Linux-based desktop operating system project by Fahad Mohamed. The project is designed around a stable Debian foundation, Wayland, systemd, PipeWire, NetworkManager, Polkit, and Flatpak, with a native FALIZ desktop shell layered on top.
 
-## Current milestone: BUILD 02 desktop session foundation
+## Current milestone: BUILD 03 professional desktop foundation
 
 This repository currently contains:
 
@@ -13,6 +13,7 @@ This repository currently contains:
 - A real sway Wayland compositor session with four configured virtual workspaces.
 - Interactive native launcher, dock, toast feedback, workspace controls, and dark/light theme switching.
 - Native FALIZ Settings application with appearance, session, audio, network, authorization, and Flatpak status panels.
+- Professional Waybar panel, swaylock integration, guarded installer/update foundations, and a core application suite.
 - Validation scripts for compiling the shell and checking the image toolchain.
 
 This is an active engineering foundation, not a claim that every item in the master specification is complete. The login screen, installer UX, hardware matrix, and full native application suite remain subsequent stages.
@@ -46,3 +47,12 @@ The current live image target is Debian Bookworm on x86_64, selected because the
 ## License
 
 The project source is released under the MIT License. Linux, GTK, Libadwaita, systemd, and other upstream components retain their own licenses.
+
+## Developer credits
+
+- [Threads — @ard.sing](https://www.threads.com/@ard.sing)
+- [Reddit — gamesiteonline](https://www.reddit.com/u/gamesiteonline)
+- [Instagram — @ard.sing](https://www.instagram.com/ard.sing)
+- [WhatsApp channel](https://whatsapp.com/channel/0029VbChyDUI1rcht5jajL3q)
+- [YouTube — gamesiteonline](https://youtube.com/@gamesiteonline?si=2qKZs5YUptHS6cTd)
+- [Google Play Games — gamesiteonline](https://my.play/gamesiteonline)
