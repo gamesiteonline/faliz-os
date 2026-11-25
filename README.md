@@ -31,15 +31,15 @@ The new native **FALIZ Installer** guides users through storage-device discovery
 
 ## Download
 
-The verified BUILD 03 release remains available from the [FALIZ OS BUILD 03 release page](https://github.com/gamesiteonline/faliz-os/releases/tag/v0.3.0). The BUILD 04 source and installer-preview updates are available in this repository; a BUILD 04 release artifact will be published after final release verification.
+Download the verified BUILD 04 image from the [FALIZ OS BUILD 04 release page](https://github.com/gamesiteonline/faliz-os/releases/tag/v0.4.0).
 
-- [Download the FALIZ OS BUILD 03 ISO](https://github.com/gamesiteonline/faliz-os/releases/download/v0.3.0/faliz-os-build-03-live-amd64.iso) — approximately 1.45 GiB.
-- [Download the SHA-256 checksum](https://github.com/gamesiteonline/faliz-os/releases/download/v0.3.0/faliz-os-build-03-live-amd64.iso.sha256).
+- [Download the FALIZ OS BUILD 04 ISO](https://github.com/gamesiteonline/faliz-os/releases/download/v0.4.0/faliz-os-build-04-live-amd64.iso) — approximately 1.49 GiB.
+- [Download the BUILD 04 SHA-256 checksum](https://github.com/gamesiteonline/faliz-os/releases/download/v0.4.0/faliz-os-build-04-live-amd64.iso.sha256).
 
 After downloading both files, verify the ISO before writing it to a USB drive:
 
 ```bash
-sha256sum -c faliz-os-build-03-live-amd64.iso.sha256
+sha256sum -c faliz-os-build-04-live-amd64.iso.sha256
 ```
 
 The expected SHA-256 digest is:
