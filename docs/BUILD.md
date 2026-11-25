@@ -143,3 +143,27 @@ e90dd1947cd2e6dd5948de17906e8849052892ba79fd4710cf615e6db9d59ead
 ```
 
 The final image remains bootable, checksum-valid, and passed the 30-second software-emulated QEMU smoke test. Native validation passed with BUILD 03 version output.
+
+
+## BUILD 04 graphical installer preview — 2026-11-25
+
+BUILD 04 adds a native GTK4/Libadwaita FALIZ Installer application. It provides a guided four-stage workflow: target-disk discovery, user and computer-name setup, installation-plan review, and a completion screen. The live UI refreshes storage devices with `lsblk`, requires an explicit erase acknowledgment before reviewing a target, and invokes the guarded CLI backend for a non-destructive dry run.
+
+The installer is packaged as:
+
+```text
+/usr/local/bin/faliz-installer-ui
+/usr/local/bin/faliz-installer
+/usr/share/applications/com.faliz.OS.Installer.desktop
+```
+
+The BUILD 04 installer does not yet partition, format, encrypt, create filesystems, install a bootloader, create a permanent user account, or write to a disk. The destructive backend remains disabled by design until those operations have been independently validated. The UI communicates this boundary directly and reports that no disk was modified.
+
+Native validation now reports:
+
+```text
+FALIZ OS shell BUILD 04 0.4.0
+FALIZ Settings BUILD 04 0.4.0
+FALIZ Installer BUILD 04 0.4.0
+FALIZ validation passed
+```

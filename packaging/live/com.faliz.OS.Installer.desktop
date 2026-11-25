@@ -1,0 +1,9 @@
+[Desktop Entry]
+Type=Application
+Name=FALIZ Installer
+Comment=Prepare a safe FALIZ OS installation plan
+Exec=/usr/local/bin/faliz-installer-ui
+Icon=drive-harddisk
+Terminal=false
+Categories=System;Utility;
+StartupNotify=true

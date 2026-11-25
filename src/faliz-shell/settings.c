@@ -118,7 +118,7 @@ static void activate(GApplication *application, gpointer user_data) {
     adw_preferences_group_set_description(identity, "A focused Debian-based desktop experience built with GTK4, Libadwaita, and Wayland.");
     adw_preferences_page_add(about, identity);
     AdwActionRow *version = ADW_ACTION_ROW(adw_action_row_new());
-    adw_preferences_row_set_title(ADW_PREFERENCES_ROW(version), "BUILD 03");
+    adw_preferences_row_set_title(ADW_PREFERENCES_ROW(version), "BUILD 04");
     adw_action_row_set_subtitle(version, "Professional desktop foundation and core application suite");
     adw_preferences_group_add(identity, GTK_WIDGET(version));
 
@@ -138,7 +138,7 @@ static void activate(GApplication *application, gpointer user_data) {
 
 int main(int argc, char **argv) {
     if (argc > 1 && g_strcmp0(argv[1], "--version") == 0) {
-        g_print("FALIZ Settings BUILD 03 0.3.0\n");
+        g_print("FALIZ Settings BUILD 04 0.4.0\n");
         return 0;
     }
     AdwApplication *app = adw_application_new(APP_ID, G_APPLICATION_DEFAULT_FLAGS);

@@ -60,6 +60,11 @@ static void launch_settings(GtkButton *button, gpointer user_data) {
     launch_command(user_data, "faliz-settings", "Settings");
 }
 
+static void launch_installer(GtkButton *button, gpointer user_data) {
+    (void)button;
+    launch_command(user_data, "faliz-installer-ui", "FALIZ Installer");
+}
+
 static void launch_browser(GtkButton *button, gpointer user_data) {
     (void)button;
     launch_uri(user_data, "https://www.example.com", "Browser");
@@ -182,6 +187,7 @@ static GtkWidget *build_launcher(FalizShell *shell) {
     gtk_box_append(GTK_BOX(box), app_button("Terminal", "utilities-terminal-symbolic", G_CALLBACK(launch_terminal), shell));
     gtk_box_append(GTK_BOX(box), app_button("Browser", "web-browser-symbolic", G_CALLBACK(launch_browser), shell));
     gtk_box_append(GTK_BOX(box), app_button("Settings", "preferences-system-symbolic", G_CALLBACK(launch_settings), shell));
+    gtk_box_append(GTK_BOX(box), app_button("FALIZ Installer", "drive-harddisk-symbolic", G_CALLBACK(launch_installer), shell));
     gtk_box_append(GTK_BOX(box), app_button("Calculator", "accessories-calculator-symbolic", G_CALLBACK(launch_calculator), shell));
     gtk_box_append(GTK_BOX(box), app_button("Calendar", "x-office-calendar-symbolic", G_CALLBACK(launch_calendar), shell));
     gtk_box_append(GTK_BOX(box), app_button("Notes", "accessories-text-editor-symbolic", G_CALLBACK(launch_notes), shell));
@@ -271,7 +277,7 @@ static void activate(GApplication *app, gpointer user_data) {
     gtk_widget_add_css_class(sub, "subtitle");
     gtk_box_append(GTK_BOX(content), sub);
 
-    GtkWidget *hint = gtk_label_new("FALIZ BUILD 02  •  sway Wayland session  •  4 workspaces");
+    GtkWidget *hint = gtk_label_new("FALIZ BUILD 04  •  sway Wayland session  •  safe installer preview");
     gtk_widget_add_css_class(hint, "session-hint");
     gtk_box_append(GTK_BOX(content), hint);
 
@@ -290,6 +296,7 @@ static void activate(GApplication *app, gpointer user_data) {
     gtk_box_append(GTK_BOX(dock), dock_button("Terminal", "utilities-terminal-symbolic", G_CALLBACK(launch_terminal), &shell));
     gtk_box_append(GTK_BOX(dock), dock_button("Browser", "web-browser-symbolic", G_CALLBACK(launch_browser), &shell));
     gtk_box_append(GTK_BOX(dock), dock_button("Settings", "preferences-system-symbolic", G_CALLBACK(launch_settings), &shell));
+    gtk_box_append(GTK_BOX(dock), dock_button("Installer", "drive-harddisk-symbolic", G_CALLBACK(launch_installer), &shell));
 
     GtkWidget *theme = gtk_switch_new();
     gtk_widget_set_tooltip_text(theme, "Toggle light theme");
@@ -304,7 +311,7 @@ static void activate(GApplication *app, gpointer user_data) {
 
 int main(int argc, char **argv) {
     if (argc > 1 && g_strcmp0(argv[1], "--version") == 0) {
-        g_print("FALIZ OS shell BUILD 03 0.3.0\n");
+        g_print("FALIZ OS shell BUILD 04 0.4.0\n");
         return 0;
     }
     AdwApplication *app = adw_application_new(APP_ID, G_APPLICATION_DEFAULT_FLAGS);

@@ -6,7 +6,7 @@
 
 ### A professional Debian-based Wayland desktop experience
 
-[![BUILD 03](https://img.shields.io/badge/BUILD%2003-released-7c5cff?style=for-the-badge)](https://github.com/gamesiteonline/faliz-os/releases/tag/v0.3.0)
+[![BUILD 04](https://img.shields.io/badge/BUILD%2004-installer%20preview-7c5cff?style=for-the-badge)](https://github.com/gamesiteonline/faliz-os)
 [![Debian Bookworm](https://img.shields.io/badge/Debian-Bookworm-a81d33?style=for-the-badge&logo=debian&logoColor=white)](https://www.debian.org/releases/bookworm/)
 [![Architecture](https://img.shields.io/badge/Architecture-amd64%20%2F%20x86__64-1f6feb?style=for-the-badge)](https://github.com/gamesiteonline/faliz-os)
 [![License](https://img.shields.io/badge/License-MIT-2ea44f?style=for-the-badge)](LICENSE)
@@ -23,15 +23,15 @@ FALIZ OS is created by **Fahad Mohamed from Tanzania** 🇹🇿. Fahad is an **A
 
 FALIZ OS is an independent project built with determination and a focus on creating a polished, welcoming Linux desktop experience. The project is still evolving, and each release documents what has been implemented and verified rather than presenting unfinished ideas as completed features.
 
-## BUILD 03 highlights
+## BUILD 04 highlights
 
-BUILD 03 is a polished Debian Bookworm live desktop for amd64/x86_64 computers. It includes a real Sway Wayland session, a native GTK4/Libadwaita FALIZ shell and Settings application, a professional Waybar panel, floating dock, launcher, workspaces, notifications, dark and light themes, branding, and application shortcuts.
+BUILD 04 builds on the polished Debian Bookworm live desktop for amd64/x86_64 computers. It includes a real Sway Wayland session, a native GTK4/Libadwaita FALIZ shell and Settings application, a professional Waybar panel, floating dock, launcher, workspaces, notifications, dark and light themes, branding, and application shortcuts.
 
-The image also includes swaylock integration, NetworkManager tools, audio controls through Pavucontrol, UDisks2 support, GNOME Disk Utility, Firefox ESR, LibreOffice Writer, Thunderbird, and a broader desktop application launcher. Safe `faliz-installer` and `faliz-update` foundations are included; destructive disk operations are intentionally refused until the complete installer workflow is implemented.
+The new native **FALIZ Installer** guides users through storage-device discovery, an explicit erase acknowledgment, user setup, installation-plan review, and a safe dry run. The image also includes swaylock integration, NetworkManager tools, audio controls through Pavucontrol, UDisks2 support, GNOME Disk Utility, Firefox ESR, LibreOffice Writer, Thunderbird, and a broader desktop application launcher. Destructive disk operations are intentionally refused until the complete partitioning, encryption, filesystem, bootloader, and recovery workflow is fully implemented and tested.
 
 ## Download
 
-Download the verified release from the [FALIZ OS BUILD 03 release page](https://github.com/gamesiteonline/faliz-os/releases/tag/v0.3.0):
+The verified BUILD 03 release remains available from the [FALIZ OS BUILD 03 release page](https://github.com/gamesiteonline/faliz-os/releases/tag/v0.3.0). The BUILD 04 source and installer-preview updates are available in this repository; a BUILD 04 release artifact will be published after final release verification.
 
 - [Download the FALIZ OS BUILD 03 ISO](https://github.com/gamesiteonline/faliz-os/releases/download/v0.3.0/faliz-os-build-03-live-amd64.iso) — approximately 1.45 GiB.
 - [Download the SHA-256 checksum](https://github.com/gamesiteonline/faliz-os/releases/download/v0.3.0/faliz-os-build-03-live-amd64.iso.sha256).

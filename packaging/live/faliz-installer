@@ -3,9 +3,9 @@ set -eu
 
 usage() {
   cat <<'EOF'
-FALIZ Installer foundation
+FALIZ Installer BUILD 04 safety backend
 
-This BUILD 03 command is intentionally non-destructive by default.
+The BUILD 04 graphical installer preview is intentionally non-destructive.
 
   faliz-installer --list
   faliz-installer --dry-run --target /dev/sdX
@@ -34,7 +34,7 @@ case "${1:-}" in
       echo "Refusing installation: use --confirm with the exact target device." >&2
       exit 3
     }
-    echo "FALIZ graphical installer is not enabled in BUILD 03." >&2
+    echo "FALIZ destructive installation is not enabled in BUILD 04." >&2
     echo "No disk was modified." >&2
     exit 4
     ;;
