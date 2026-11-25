@@ -6,7 +6,7 @@
 
 ### A professional Debian-based Wayland desktop experience
 
-[![BUILD 04](https://img.shields.io/badge/BUILD%2004-installer%20preview-7c5cff?style=for-the-badge)](https://github.com/gamesiteonline/faliz-os)
+[![BUILD 04](https://img.shields.io/badge/BUILD%2004-guarded%20installer-7c5cff?style=for-the-badge)](https://github.com/gamesiteonline/faliz-os/releases/tag/v0.4.1)
 [![Debian Bookworm](https://img.shields.io/badge/Debian-Bookworm-a81d33?style=for-the-badge&logo=debian&logoColor=white)](https://www.debian.org/releases/bookworm/)
 [![Architecture](https://img.shields.io/badge/Architecture-amd64%20%2F%20x86__64-1f6feb?style=for-the-badge)](https://github.com/gamesiteonline/faliz-os)
 [![License](https://img.shields.io/badge/License-MIT-2ea44f?style=for-the-badge)](LICENSE)
@@ -27,14 +27,14 @@ FALIZ OS is an independent project built with determination and a focus on creat
 
 BUILD 04 builds on the polished Debian Bookworm live desktop for amd64/x86_64 computers. It includes a real Sway Wayland session, a native GTK4/Libadwaita FALIZ shell and Settings application, a professional Waybar panel, floating dock, launcher, workspaces, notifications, dark and light themes, branding, and application shortcuts.
 
-The new native **FALIZ Installer** guides users through storage-device discovery, an explicit erase acknowledgment, user setup, installation-plan review, and a safe dry run. The image also includes swaylock integration, NetworkManager tools, audio controls through Pavucontrol, UDisks2 support, GNOME Disk Utility, Firefox ESR, LibreOffice Writer, Thunderbird, and a broader desktop application launcher. Destructive disk operations are intentionally refused until the complete partitioning, encryption, filesystem, bootloader, and recovery workflow is fully implemented and tested.
+The new native **FALIZ Installer** guides users through storage-device discovery, an explicit erase acknowledgment, user setup, installation-plan review, and a safe dry run. After a second destructive confirmation and administrator authorization, the guarded backend can prepare GPT/EFI/ext4 storage, copy the live system, create a user, generate fstab and initramfs, and configure GRUB for UEFI or legacy BIOS. The image also includes swaylock integration, NetworkManager tools, audio controls through Pavucontrol, UDisks2 support, GNOME Disk Utility, Firefox ESR, LibreOffice Writer, Thunderbird, and a broader desktop application launcher.
 
 ## Download
 
-Download the verified BUILD 04 image from the [FALIZ OS BUILD 04 release page](https://github.com/gamesiteonline/faliz-os/releases/tag/v0.4.0).
+Download the verified BUILD 04.1 image from the [FALIZ OS BUILD 04.1 release page](https://github.com/gamesiteonline/faliz-os/releases/tag/v0.4.1).
 
-- [Download the FALIZ OS BUILD 04 ISO](https://github.com/gamesiteonline/faliz-os/releases/download/v0.4.0/faliz-os-build-04-live-amd64.iso) — approximately 1.49 GiB.
-- [Download the BUILD 04 SHA-256 checksum](https://github.com/gamesiteonline/faliz-os/releases/download/v0.4.0/faliz-os-build-04-live-amd64.iso.sha256).
+- [Download the FALIZ OS BUILD 04.1 ISO](https://github.com/gamesiteonline/faliz-os/releases/download/v0.4.1/faliz-os-build-04-live-amd64.iso) — approximately 1.48 GiB.
+- [Download the BUILD 04.1 SHA-256 checksum](https://github.com/gamesiteonline/faliz-os/releases/download/v0.4.1/faliz-os-build-04-live-amd64.iso.sha256).
 
 After downloading both files, verify the ISO before writing it to a USB drive:
 
@@ -42,10 +42,10 @@ After downloading both files, verify the ISO before writing it to a USB drive:
 sha256sum -c faliz-os-build-04-live-amd64.iso.sha256
 ```
 
-The expected SHA-256 digest is:
+The expected SHA-256 digest for BUILD 04.1 is:
 
 ```text
-e90dd1947cd2e6dd5948de17906e8849052892ba79fd4710cf615e6db9d59ead
+f6e18b27f2b4f9c60dd2ca90c74447931f216e38fcc313c0425ec87ea347530d
 ```
 
 ## Install and boot FALIZ OS from a USB drive
@@ -89,7 +89,7 @@ BUILD 03 is a bootable live ISO. The steps below create a USB device that boots 
 
 Choose the live desktop option shown by the boot menu. The live environment is designed for evaluation and testing. Check the display, keyboard, touchpad, network, audio, applications, and workspace controls before deciding whether the hardware is suitable.
 
-BUILD 03 does **not** yet provide a complete graphical installer for partitioning, encryption, user creation, bootloader installation, and permanent disk installation. The included `faliz-installer` command is deliberately guarded and refuses unimplemented destructive operations. Do not use it to modify an internal disk. A future release will document the permanent-installation workflow when it has been fully implemented and tested.
+BUILD 04.1 provides the graphical workflow and a guarded backend for partitioning, filesystem setup, user creation, initramfs generation, and bootloader configuration. However, it has not been executed against a real disk in this build environment. Test it first on disposable hardware or a virtual machine with backups; UEFI NVRAM behavior, legacy BIOS installation, interrupted-install recovery, encryption, and post-install first boot still require acceptance testing. Never select a disk containing data you need to keep.
 
 ## Verification and project status
 
