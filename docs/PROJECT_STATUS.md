@@ -1,9 +1,7 @@
 
 
-## 22. BUILD 04 graphical installer preview — 2026-11-25
+## 23. BUILD 04 guarded installation backend — follow-up
 
-BUILD 04 begins the highest-priority persistent-installation milestone with a native FALIZ Installer preview. The new GTK4/Libadwaita application is available from the FALIZ launcher, dock, and desktop application menu. It guides the user through target-disk discovery, an explicit erase acknowledgment, user and computer-name setup, installation-plan review, and completion reporting.
+The BUILD 04 installer now has a real backend behind layered safety gates. It validates a whole-disk block device, rejects mounted and virtual targets, requires exact target confirmation and an explicit erase acknowledgment, and requires a final `ERASE:/dev/DEVICE` environment confirmation. The planned install path creates a GPT, EFI and ext4 partitions, copies the live FALIZ filesystem, writes fstab and hostname, creates the requested user, regenerates initramfs, and configures GRUB for UEFI or legacy BIOS.
 
-The live preview calls the guarded `faliz-installer --dry-run` backend and does not modify disks. Destructive partitioning, formatting, encryption, filesystem creation, bootloader installation, permanent user creation, and reboot handoff remain disabled until the complete backend is validated. This is an implemented graphical workflow foundation, not a claim of a completed permanent installer.
-
-BUILD 04 native version checks pass for the shell, Settings, and Installer. The live-build pipeline now defaults to a BUILD 04 ISO name and packages the new graphical installer binary and desktop entry.
+The graphical installer launches this backend only after a separate destructive confirmation dialog and administrator authorization. No destructive operation has been executed in this sandbox. The backend therefore remains an implemented and guarded path that still requires real-disk, UEFI/BIOS, interruption-recovery, and post-install hardware acceptance testing before it can be called production-ready.

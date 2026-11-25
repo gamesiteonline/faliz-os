@@ -40,3 +40,10 @@ vlc
 libreoffice-writer
 thunderbird
 gnome-disk-utility
+sudo
+dosfstools
+rsync
+squashfs-tools
+grub-pc-bin
+grub-efi-amd64-bin
+efibootmgr

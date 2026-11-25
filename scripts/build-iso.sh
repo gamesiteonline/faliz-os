@@ -14,6 +14,7 @@ cp "$ROOT/src/faliz-shell/faliz-shell" "$BUILD/config/includes.chroot/usr/local/
 cp "$ROOT/src/faliz-shell/faliz-settings" "$BUILD/config/includes.chroot/usr/local/bin/faliz-settings"
 cp "$ROOT/src/faliz-shell/faliz-installer" "$BUILD/config/includes.chroot/usr/local/bin/faliz-installer-ui"
 cp "$ROOT/packaging/live/faliz-installer" "$BUILD/config/includes.chroot/usr/local/bin/faliz-installer"
+cp "$ROOT/packaging/live/faliz-install-backend" "$BUILD/config/includes.chroot/usr/local/bin/faliz-install-backend"
 cp "$ROOT/packaging/live/faliz-update" "$BUILD/config/includes.chroot/usr/local/bin/faliz-update"
 cp "$ROOT/packaging/live/faliz-lock" "$BUILD/config/includes.chroot/usr/local/bin/faliz-lock"
 cp "$ROOT/src/faliz-shell/faliz.css" "$BUILD/config/includes.chroot/usr/share/faliz/faliz.css"
@@ -30,7 +31,7 @@ cp "$ROOT/packaging/wayland/sway.conf" "$BUILD/config/includes.chroot/etc/sway/c
 cp "$ROOT/packaging/wayland/waybar.jsonc" "$BUILD/config/includes.chroot/etc/waybar/config"
 cp "$ROOT/packaging/wayland/waybar.css" "$BUILD/config/includes.chroot/etc/waybar/style.css"
 cp "$ROOT/packaging/wayland/faliz-session-autostart" "$BUILD/config/includes.chroot/usr/local/bin/faliz-session-autostart"
-chmod 0755 "$BUILD/config/includes.chroot/etc/profile.d/faliz-session-environment.sh" "$BUILD/config/includes.chroot/usr/local/bin/faliz-session-autostart" "$BUILD/config/includes.chroot/usr/local/bin/faliz-installer-ui" "$BUILD/config/includes.chroot/usr/local/bin/faliz-installer" "$BUILD/config/includes.chroot/usr/local/bin/faliz-update" "$BUILD/config/includes.chroot/usr/local/bin/faliz-lock"
+chmod 0755 "$BUILD/config/includes.chroot/etc/profile.d/faliz-session-environment.sh" "$BUILD/config/includes.chroot/usr/local/bin/faliz-session-autostart" "$BUILD/config/includes.chroot/usr/local/bin/faliz-installer-ui" "$BUILD/config/includes.chroot/usr/local/bin/faliz-installer" "$BUILD/config/includes.chroot/usr/local/bin/faliz-install-backend" "$BUILD/config/includes.chroot/usr/local/bin/faliz-update" "$BUILD/config/includes.chroot/usr/local/bin/faliz-lock"
 cp "$ROOT/branding/faliz-logo.svg" "$BUILD/config/includes.chroot/usr/share/faliz/faliz-logo.svg"
 cp "$ROOT/branding/faliz-app-icon.png" "$BUILD/config/includes.chroot/usr/share/icons/hicolor/2048x2048/apps/com.faliz.OS.Shell.png"
 # Use systemd for the live session: the native FALIZ shell already provides a

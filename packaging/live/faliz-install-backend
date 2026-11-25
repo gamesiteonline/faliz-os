@@ -1,0 +1,189 @@
+#!/bin/bash
+set -Eeuo pipefail
+
+VERSION="FALIZ install backend BUILD 04 0.4.0"
+TARGET=""
+CONFIRM=""
+FULL_NAME=""
+USERNAME=""
+PASSWORD=""
+HOSTNAME_VALUE="faliz-pc"
+DRY_RUN=0
+ERASE_ACK=0
+ROOT_MOUNT="/mnt/faliz-install"
+
+usage() {
+  cat <<'EOF'
+FALIZ installation backend BUILD 04
+
+Dry run:
+  faliz-install-backend --dry-run --target /dev/sdX --confirm /dev/sdX --yes-really-erase
+
+Install (DESTRUCTIVE; requires exact confirmation):
+  faliz-install-backend --install --target /dev/sdX --confirm /dev/sdX \
+    --yes-really-erase --name "Full Name" --username user --password-file FILE \
+    [--hostname faliz-pc]
+
+The installer accepts only a whole-disk block device. It refuses mounted disks,
+loop devices, removable-device ambiguity, missing source media, and mismatched
+confirmation. Never run install mode unless the target has been independently
+checked and all data on it is backed up.
+EOF
+}
+fail() { echo "FALIZ installer: $*" >&2; exit 1; }
+log() { printf '[FALIZ installer] %s\n' "$*"; }
+need_cmd() { command -v "$1" >/dev/null 2>&1 || fail "required command missing: $1"; }
+
+while (($#)); do
+  case "$1" in
+    --version) echo "$VERSION"; exit 0 ;;
+    --help|-h) usage; exit 0 ;;
+    --dry-run) DRY_RUN=1 ;;
+    --install) DRY_RUN=0 ;;
+    --target) TARGET="${2:-}"; shift ;;
+    --confirm) CONFIRM="${2:-}"; shift ;;
+    --yes-really-erase) ERASE_ACK=1 ;;
+    --name) FULL_NAME="${2:-}"; shift ;;
+    --username) USERNAME="${2:-}"; shift ;;
+    --password-file) PASSWORD_FILE="${2:-}"; shift ;;
+    --hostname) HOSTNAME_VALUE="${2:-}"; shift ;;
+    *) fail "unknown option: $1" ;;
+  esac
+  shift
+done
+
+[[ -n "$TARGET" ]] || { usage >&2; exit 2; }
+[[ "$TARGET" == "$CONFIRM" ]] || fail "target and exact confirmation must match"
+[[ "$TARGET" == /dev/* ]] || fail "target must be a /dev block device"
+[[ "$TARGET" != /dev/loop* && "$TARGET" != /dev/sr* && "$TARGET" != /dev/ram* ]] || fail "refusing virtual or optical device"
+[[ "$ERASE_ACK" == 1 ]] || fail "missing --yes-really-erase acknowledgment"
+
+for command in lsblk findmnt awk sed grep mount umount sfdisk wipefs mkfs.ext4 mkfs.fat unsquashfs chroot; do need_cmd "$command"; done
+[[ -b "$TARGET" ]] || fail "target is not an existing block device: $TARGET"
+[[ "$(lsblk -dn -o TYPE "$TARGET")" == "disk" ]] || fail "target must be a whole disk, not a partition"
+
+MOUNTED=$(lsblk -nrpo NAME,MOUNTPOINTS "$TARGET" | awk '$2 != "" {print $1 " -> " $2}')
+[[ -z "$MOUNTED" ]] || fail "target or one of its partitions is mounted: $MOUNTED"
+
+if [[ "$TARGET" =~ [0-9]$ ]]; then
+  DISK_PREFIX="${TARGET}p"
+else
+  DISK_PREFIX="$TARGET"
+fi
+EFI_PART="${DISK_PREFIX}1"
+ROOT_PART="${DISK_PREFIX}2"
+
+find_source_squashfs() {
+  local candidate
+  for candidate in \
+    /run/live/medium/live/filesystem.squashfs \
+    /run/live/medium/live/filesystem.packages.squashfs \
+    /live/image/live/filesystem.squashfs; do
+    [[ -f "$candidate" ]] && { printf '%s\n' "$candidate"; return 0; }
+  done
+  find /run/live /live -type f -name 'filesystem*.squashfs' -print -quit 2>/dev/null || true
+}
+SQUASHFS="$(find_source_squashfs)"
+[[ -n "$SQUASHFS" && -f "$SQUASHFS" ]] || fail "could not find the live FALIZ filesystem source"
+
+if ((DRY_RUN)); then
+  cat <<EOF
+FALIZ INSTALLATION PLAN (DRY RUN)
+
+Target disk: $TARGET
+EFI partition: $EFI_PART (512 MiB, FAT32)
+Root partition: $ROOT_PART (remaining space, ext4)
+Live source: $SQUASHFS
+Hostname: $HOSTNAME_VALUE
+User: ${USERNAME:-not supplied}
+
+The plan would erase the target, create a GPT partition table, install the
+FALIZ live filesystem, create the requested user, configure fstab, install a
+bootloader, and regenerate the initramfs. No disk was modified.
+EOF
+  exit 0
+fi
+
+[[ $EUID -eq 0 ]] || fail "install mode requires root"
+[[ -n "$FULL_NAME" && -n "$USERNAME" && -n "${PASSWORD_FILE:-}" ]] || fail "install mode requires --name, --username, and --password-file"
+[[ "$USERNAME" =~ ^[a-z_][a-z0-9_-]{0,31}$ ]] || fail "invalid username"
+[[ "$HOSTNAME_VALUE" =~ ^[a-zA-Z0-9][a-zA-Z0-9-]{0,62}$ ]] || fail "invalid hostname"
+[[ -f "$PASSWORD_FILE" ]] || fail "password file does not exist"
+[[ "$(wc -l < "$PASSWORD_FILE")" -eq 1 ]] || fail "password file must contain exactly one line"
+[[ "$(cat "$PASSWORD_FILE")" != *$'\n'* ]] || fail "invalid password file"
+
+if [[ -e "$TARGET" && "$TARGET" == /dev/* ]]; then
+  log "Final target confirmation: $TARGET"
+  log "This operation will erase all data on the target disk."
+  [[ "${FALIZ_NONINTERACTIVE_CONFIRM:-}" == "ERASE:$TARGET" ]] || fail "set FALIZ_NONINTERACTIVE_CONFIRM=ERASE:$TARGET for the final safety gate"
+fi
+
+cleanup() {
+  set +e
+  for mountpoint in "$ROOT_MOUNT/boot/efi" "$ROOT_MOUNT/dev" "$ROOT_MOUNT/proc" "$ROOT_MOUNT/sys" "$ROOT_MOUNT/run" "$ROOT_MOUNT"; do
+    mountpoint -q "$mountpoint" 2>/dev/null && umount -R "$mountpoint" 2>/dev/null || true
+  done
+}
+trap cleanup EXIT
+
+need_cmd partprobe
+need_cmd mountpoint
+need_cmd mkfs.fat
+need_cmd grub-install
+need_cmd grub-mkconfig
+need_cmd update-initramfs
+need_cmd rsync
+
+log "Wiping signatures on $TARGET"
+wipefs --all --force "$TARGET"
+log "Creating GPT with EFI and root partitions"
+printf ',512M,U\n,,L\n' | sfdisk --wipe always --wipe-partitions always "$TARGET"
+partprobe "$TARGET"
+udevadm settle 2>/dev/null || true
+
+log "Formatting partitions"
+mkfs.fat -F32 -n FALIZ_EFI "$EFI_PART"
+mkfs.ext4 -F -L FALIZ_ROOT "$ROOT_PART"
+mkdir -p "$ROOT_MOUNT"
+mount "$ROOT_PART" "$ROOT_MOUNT"
+mkdir -p "$ROOT_MOUNT/boot/efi"
+mount "$EFI_PART" "$ROOT_MOUNT/boot/efi"
+
+log "Copying the FALIZ live filesystem"
+unsquashfs -d "$ROOT_MOUNT" "$SQUASHFS"
+mkdir -p "$ROOT_MOUNT/etc"
+ROOT_UUID=$(blkid -s UUID -o value "$ROOT_PART")
+EFI_UUID=$(blkid -s UUID -o value "$EFI_PART")
+cat > "$ROOT_MOUNT/etc/fstab" <<EOF
+UUID=$ROOT_UUID / ext4 defaults,errors=remount-ro 0 1
+UUID=$EFI_UUID /boot/efi vfat umask=0077 0 1
+EOF
+printf '%s\n' "$HOSTNAME_VALUE" > "$ROOT_MOUNT/etc/hostname"
+cat > "$ROOT_MOUNT/etc/hosts" <<EOF
+127.0.0.1 localhost
+127.0.1.1 $HOSTNAME_VALUE
+::1 localhost ip6-localhost ip6-loopback
+EOF
+
+mkdir -p "$ROOT_MOUNT/etc/faliz"
+printf '%s\n' 'BUILD 04 installed by FALIZ guarded backend' > "$ROOT_MOUNT/etc/faliz/install-marker"
+
+mount --rbind /dev "$ROOT_MOUNT/dev"
+mount --make-rslave "$ROOT_MOUNT/dev"
+mount -t proc proc "$ROOT_MOUNT/proc"
+mount --rbind /sys "$ROOT_MOUNT/sys"
+mount --make-rslave "$ROOT_MOUNT/sys"
+mount --rbind /run "$ROOT_MOUNT/run"
+mount --make-rslave "$ROOT_MOUNT/run"
+
+install -m 600 "$PASSWORD_FILE" "$ROOT_MOUNT/tmp/faliz-password"
+chroot "$ROOT_MOUNT" /bin/bash -c "useradd --create-home --shell /bin/bash --comment '$FULL_NAME' '$USERNAME' && chpasswd < /tmp/faliz-password && usermod -aG sudo,audio,video,plugdev '$USERNAME' && rm -f /tmp/faliz-password"
+chroot "$ROOT_MOUNT" update-initramfs -c -k all || chroot "$ROOT_MOUNT" update-initramfs -u -k all
+if [[ -d /sys/firmware/efi ]]; then
+  chroot "$ROOT_MOUNT" grub-install --target=x86_64-efi --efi-directory=/boot/efi --bootloader-id=FALIZ --recheck
+else
+  chroot "$ROOT_MOUNT" grub-install --target=i386-pc "$TARGET" --recheck
+fi
+chroot "$ROOT_MOUNT" grub-mkconfig -o /boot/grub/grub.cfg
+sync
+log "FALIZ installation completed on $TARGET. Remove the USB and reboot."

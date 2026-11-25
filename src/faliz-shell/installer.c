@@ -1,5 +1,7 @@
 #include <adwaita.h>
 #include <gtk/gtk.h>
+#include <sys/stat.h>
+#include <unistd.h>
 
 #define APP_ID "com.faliz.OS.Installer"
 #define INSTALLER_VERSION "FALIZ Installer BUILD 04 0.4.0"
@@ -19,6 +21,7 @@ typedef struct {
     GtkWidget *status;
     GtkWidget *back_button;
     GtkWidget *next_button;
+    GtkWidget *install_button;
     char *selected_target;
     int step;
 } Installer;
@@ -114,7 +117,7 @@ static void update_summary(Installer *installer) {
     gboolean erase = gtk_check_button_get_active(GTK_CHECK_BUTTON(installer->erase_check));
     gboolean encrypt = gtk_check_button_get_active(GTK_CHECK_BUTTON(installer->encrypt_check));
     char *text = g_strdup_printf(
-        "Target disk: %s\nFull-disk erase: %s\nEncryption: %s\n\nUser: %s\nUsername: %s\nComputer name: %s\n\nBUILD 04 safety mode: this review is non-destructive. The current backend will only perform a dry run.",
+        "Target disk: %s\nFull-disk erase: %s\nEncryption: %s\n\nUser: %s\nUsername: %s\nComputer name: %s\n\nBUILD 04: use the safe dry run first. A real install requires the separate destructive confirmation and administrator authorization.",
         disk ? disk : "Not selected", erase ? "Acknowledged" : "Not selected", encrypt ? "Requested (not yet enabled)" : "Not requested",
         *name ? name : "Not set", *username ? username : "Not set", *hostname ? hostname : "Not set");
     gtk_label_set_text(GTK_LABEL(installer->summary), text);
@@ -180,6 +183,66 @@ static void run_dry_run(Installer *installer) {
     g_free(stderr_text);
 }
 
+static void perform_install(Installer *installer) {
+    const char *disk = selected_disk(installer);
+    const char *name = gtk_editable_get_text(GTK_EDITABLE(installer->name_entry));
+    const char *username = gtk_editable_get_text(GTK_EDITABLE(installer->username_entry));
+    const char *password = gtk_editable_get_text(GTK_EDITABLE(installer->password_entry));
+    const char *hostname = gtk_editable_get_text(GTK_EDITABLE(installer->hostname_entry));
+    GError *error = NULL;
+    gchar *password_file = NULL;
+    gint password_fd = g_file_open_tmp("faliz-password-XXXXXX", &password_file, &error);
+    if (password_fd < 0 || !g_file_set_contents(password_file, password, -1, &error)) {
+        if (password_fd >= 0) close(password_fd);
+        g_clear_error(&error);
+        g_free(password_file);
+        set_status(installer, "Could not prepare the temporary password file.", TRUE);
+        return;
+    }
+    close(password_fd);
+    chmod(password_file, 0600);
+    gchar *confirm = g_strdup_printf("FALIZ_NONINTERACTIVE_CONFIRM=ERASE:%s", disk);
+    const gchar *argv[] = {
+        "pkexec", "env", confirm, "/usr/local/bin/faliz-install-backend", "--install",
+        "--target", disk, "--confirm", disk, "--yes-really-erase", "--name", name,
+        "--username", username, "--password-file", password_file, "--hostname", hostname, NULL
+    };
+    GSubprocess *process = g_subprocess_newv(argv, G_SUBPROCESS_FLAGS_STDOUT_PIPE | G_SUBPROCESS_FLAGS_STDERR_PIPE, &error);
+    if (process) {
+        set_status(installer, "Installer started. Follow the authorization prompt and do not power off the computer.", FALSE);
+        g_object_unref(process);
+        show_step(installer, 3);
+    } else {
+        set_status(installer, error ? error->message : "Could not start the installer.", TRUE);
+        g_clear_error(&error);
+    }
+    g_free(confirm);
+    g_free(password_file);
+}
+
+static void install_dialog_response(AdwMessageDialog *dialog, const char *response, gpointer user_data) {
+    Installer *installer = user_data;
+    if (g_str_equal(response, "install")) perform_install(installer);
+    gtk_window_destroy(GTK_WINDOW(dialog));
+}
+
+static void install_clicked(GtkButton *button, gpointer user_data) {
+    (void)button;
+    Installer *installer = user_data;
+    if (!validate_step(installer)) return;
+    update_summary(installer);
+    AdwMessageDialog *dialog = ADW_MESSAGE_DIALOG(adw_message_dialog_new(
+        GTK_WINDOW(installer->window), "Erase selected disk?",
+        "This action will erase the selected disk and install FALIZ OS. Confirm the target device, back up your data, and continue only if you understand the risk."));
+    adw_message_dialog_add_response(dialog, "cancel", "Cancel");
+    adw_message_dialog_add_response(dialog, "install", "Erase and install");
+    adw_message_dialog_set_response_appearance(dialog, "install", ADW_RESPONSE_DESTRUCTIVE);
+    adw_message_dialog_set_default_response(dialog, "cancel");
+    adw_message_dialog_set_close_response(dialog, "cancel");
+    g_signal_connect(dialog, "response", G_CALLBACK(install_dialog_response), installer);
+    adw_dialog_present(ADW_DIALOG(dialog), GTK_WIDGET(installer->window));
+}
+
 static void next_clicked(GtkButton *button, gpointer user_data) {
     (void)button;
     Installer *installer = user_data;
@@ -204,7 +267,7 @@ static void back_clicked(GtkButton *button, gpointer user_data) {
 
 static GtkWidget *build_disk_page(Installer *installer) {
     GtkWidget *box = gtk_box_new(GTK_ORIENTATION_VERTICAL, 18);
-    gtk_box_append(GTK_BOX(box), title_label("Choose where FALIZ OS will be installed", "This BUILD 04 preview identifies disks and prepares a safe installation plan. It never writes to a disk."));
+    gtk_box_append(GTK_BOX(box), title_label("Choose where FALIZ OS will be installed", "BUILD 04 identifies disks and prepares an installation plan. Disk writes are blocked until the final destructive confirmation and administrator authorization."));
     GtkStringList *model = gtk_string_list_new(NULL);
     installer->disk_combo = gtk_drop_down_new(G_LIST_MODEL(model), NULL);
     gtk_drop_down_set_enable_search(GTK_DROP_DOWN(installer->disk_combo), TRUE);
@@ -243,20 +306,25 @@ static GtkWidget *build_user_page(Installer *installer) {
 
 static GtkWidget *build_review_page(Installer *installer) {
     GtkWidget *box = gtk_box_new(GTK_ORIENTATION_VERTICAL, 18);
-    gtk_box_append(GTK_BOX(box), title_label("Review your installation plan", "Check every detail before continuing. This preview will only invoke a guarded dry run."));
+    gtk_box_append(GTK_BOX(box), title_label("Review your installation plan", "Check every detail. The safe dry run is available below; the destructive install requires a second confirmation."));
     installer->summary = gtk_label_new("");
     gtk_label_set_selectable(GTK_LABEL(installer->summary), TRUE);
     gtk_label_set_wrap(GTK_LABEL(installer->summary), TRUE);
     gtk_widget_set_halign(installer->summary, GTK_ALIGN_START);
     gtk_widget_add_css_class(installer->summary, "installer-summary");
     gtk_box_append(GTK_BOX(box), installer->summary);
+    installer->install_button = gtk_button_new_with_label("Erase selected disk and install FALIZ OS");
+    gtk_widget_add_css_class(installer->install_button, "destructive-action");
+    gtk_widget_set_halign(installer->install_button, GTK_ALIGN_START);
+    g_signal_connect(installer->install_button, "clicked", G_CALLBACK(install_clicked), installer);
+    gtk_box_append(GTK_BOX(box), installer->install_button);
     return box;
 }
 
 static GtkWidget *build_complete_page(void) {
     GtkWidget *box = gtk_box_new(GTK_ORIENTATION_VERTICAL, 18);
-    gtk_box_append(GTK_BOX(box), title_label("FALIZ installation plan prepared", "The safe preview is complete. No partitions, filesystems, bootloaders, or disks were changed."));
-    GtkWidget *done = gtk_label_new("BUILD 04 Installer Preview\n\nThe next implementation stage will connect this guided workflow to a fully tested installation backend. Until then, FALIZ remains a live desktop and this tool remains non-destructive by design.");
+    gtk_box_append(GTK_BOX(box), title_label("FALIZ installation process started", "The backend is running only after explicit confirmation and administrator authorization."));
+    GtkWidget *done = gtk_label_new("BUILD 04 Installer\n\nIf you started a real installation, keep the computer powered on and wait for the backend to finish. If you ran the safe dry run, no partitions, filesystems, bootloaders, or disks were changed.");
     gtk_label_set_wrap(GTK_LABEL(done), TRUE);
     gtk_widget_add_css_class(done, "installer-success");
     gtk_box_append(GTK_BOX(box), done);
