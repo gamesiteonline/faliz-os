@@ -46,7 +46,7 @@ static void launch_uri(FalizShell *shell, const char *uri, const char *label) {
 
 static void launch_files(GtkButton *button, gpointer user_data) {
     (void)button;
-    launch_uri(user_data, "file:///home", "Files");
+    launch_command(user_data, "faliz-app --app files", "FALIZ Files");
 }
 
 static void launch_terminal(GtkButton *button, gpointer user_data) {
@@ -72,7 +72,7 @@ static void launch_browser(GtkButton *button, gpointer user_data) {
 
 static void launch_calculator(GtkButton *button, gpointer user_data) {
     (void)button;
-    launch_command(user_data, "gnome-calculator", "Calculator");
+    launch_command(user_data, "faliz-app --app calculator", "FALIZ Calculator");
 }
 
 static void launch_calendar(GtkButton *button, gpointer user_data) {
@@ -82,27 +82,27 @@ static void launch_calendar(GtkButton *button, gpointer user_data) {
 
 static void launch_notes(GtkButton *button, gpointer user_data) {
     (void)button;
-    launch_command(user_data, "gnome-text-editor", "Notes");
+    launch_command(user_data, "faliz-app --app notes", "FALIZ Notes");
 }
 
 static void launch_monitor(GtkButton *button, gpointer user_data) {
     (void)button;
-    launch_command(user_data, "gnome-system-monitor", "System Monitor");
+    launch_command(user_data, "faliz-app --app monitor", "FALIZ System Monitor");
 }
 
 static void launch_screenshot(GtkButton *button, gpointer user_data) {
     (void)button;
-    launch_command(user_data, "gnome-screenshot -i", "Screenshot");
+    launch_command(user_data, "faliz-app --app screenshot", "FALIZ Screenshot");
 }
 
 static void launch_store(GtkButton *button, gpointer user_data) {
     (void)button;
-    launch_command(user_data, "gnome-software", "Software Store");
+    launch_command(user_data, "faliz-app --app store", "FALIZ Software Store");
 }
 
 static void launch_media(GtkButton *button, gpointer user_data) {
     (void)button;
-    launch_command(user_data, "vlc", "Media Player");
+    launch_command(user_data, "faliz-app --app media", "FALIZ Media Player");
 }
 
 static void launch_archive(GtkButton *button, gpointer user_data) {
@@ -183,18 +183,18 @@ static GtkWidget *build_launcher(FalizShell *shell) {
     gtk_widget_add_css_class(heading, "launcher-heading");
     gtk_widget_set_halign(heading, GTK_ALIGN_START);
     gtk_box_append(GTK_BOX(box), heading);
-    gtk_box_append(GTK_BOX(box), app_button("Files", "folder-symbolic", G_CALLBACK(launch_files), shell));
+    gtk_box_append(GTK_BOX(box), app_button("FALIZ Files", "folder-symbolic", G_CALLBACK(launch_files), shell));
     gtk_box_append(GTK_BOX(box), app_button("Terminal", "utilities-terminal-symbolic", G_CALLBACK(launch_terminal), shell));
     gtk_box_append(GTK_BOX(box), app_button("Browser", "web-browser-symbolic", G_CALLBACK(launch_browser), shell));
     gtk_box_append(GTK_BOX(box), app_button("Settings", "preferences-system-symbolic", G_CALLBACK(launch_settings), shell));
     gtk_box_append(GTK_BOX(box), app_button("FALIZ Installer", "drive-harddisk-symbolic", G_CALLBACK(launch_installer), shell));
-    gtk_box_append(GTK_BOX(box), app_button("Calculator", "accessories-calculator-symbolic", G_CALLBACK(launch_calculator), shell));
+    gtk_box_append(GTK_BOX(box), app_button("FALIZ Calculator", "accessories-calculator-symbolic", G_CALLBACK(launch_calculator), shell));
     gtk_box_append(GTK_BOX(box), app_button("Calendar", "x-office-calendar-symbolic", G_CALLBACK(launch_calendar), shell));
-    gtk_box_append(GTK_BOX(box), app_button("Notes", "accessories-text-editor-symbolic", G_CALLBACK(launch_notes), shell));
-    gtk_box_append(GTK_BOX(box), app_button("System Monitor", "utilities-system-monitor-symbolic", G_CALLBACK(launch_monitor), shell));
-    gtk_box_append(GTK_BOX(box), app_button("Screenshot", "camera-photo-symbolic", G_CALLBACK(launch_screenshot), shell));
-    gtk_box_append(GTK_BOX(box), app_button("Software Store", "system-software-install-symbolic", G_CALLBACK(launch_store), shell));
-    gtk_box_append(GTK_BOX(box), app_button("Media Player", "multimedia-player-symbolic", G_CALLBACK(launch_media), shell));
+    gtk_box_append(GTK_BOX(box), app_button("FALIZ Notes", "accessories-text-editor-symbolic", G_CALLBACK(launch_notes), shell));
+    gtk_box_append(GTK_BOX(box), app_button("FALIZ System Monitor", "utilities-system-monitor-symbolic", G_CALLBACK(launch_monitor), shell));
+    gtk_box_append(GTK_BOX(box), app_button("FALIZ Screenshot", "camera-photo-symbolic", G_CALLBACK(launch_screenshot), shell));
+    gtk_box_append(GTK_BOX(box), app_button("FALIZ Software Store", "system-software-install-symbolic", G_CALLBACK(launch_store), shell));
+    gtk_box_append(GTK_BOX(box), app_button("FALIZ Media Player", "multimedia-player-symbolic", G_CALLBACK(launch_media), shell));
     gtk_box_append(GTK_BOX(box), app_button("Archive Manager", "package-x-generic-symbolic", G_CALLBACK(launch_archive), shell));
     gtk_box_append(GTK_BOX(box), app_button("Document Viewer", "x-office-document-symbolic", G_CALLBACK(launch_documents), shell));
     gtk_box_append(GTK_BOX(box), app_button("Image Viewer", "image-x-generic-symbolic", G_CALLBACK(launch_images), shell));
@@ -311,7 +311,7 @@ static void activate(GApplication *app, gpointer user_data) {
 
 int main(int argc, char **argv) {
     if (argc > 1 && g_strcmp0(argv[1], "--version") == 0) {
-        g_print("FALIZ OS shell BUILD 04 0.4.0\n");
+        g_print("FALIZ OS shell BUILD 04.1 0.4.1\n");
         return 0;
     }
     AdwApplication *app = adw_application_new(APP_ID, G_APPLICATION_DEFAULT_FLAGS);

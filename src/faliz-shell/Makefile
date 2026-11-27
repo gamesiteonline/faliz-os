@@ -5,7 +5,7 @@ CFLAGS += $(shell pkg-config --cflags $(PKGS))
 LDLIBS += $(shell pkg-config --libs $(PKGS))
 
 .PHONY: all clean check
-all: faliz-shell faliz-settings faliz-installer
+all: faliz-shell faliz-settings faliz-installer faliz-app
 
 faliz-shell: main.c
 	$(CC) $(CFLAGS) -o $@ $< $(LDLIBS)
@@ -16,10 +16,14 @@ faliz-settings: settings.c
 faliz-installer: installer.c
 	$(CC) $(CFLAGS) -o $@ $< $(LDLIBS)
 
-check: faliz-shell faliz-settings faliz-installer
+faliz-app: apps.c
+	$(CC) $(CFLAGS) -o $@ $< $(LDLIBS)
+
+check: faliz-shell faliz-settings faliz-installer faliz-app
 	./faliz-shell --version
 	./faliz-settings --version
 	./faliz-installer --version
+	./faliz-app --version
 
 clean:
-	rm -f faliz-shell faliz-settings faliz-installer
+	rm -f faliz-shell faliz-settings faliz-installer faliz-app

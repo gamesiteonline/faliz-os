@@ -1,0 +1,9 @@
+[Desktop Entry]
+Type=Application
+Name=FALIZ Notes
+Comment=Write and save local notes
+Exec=/usr/local/bin/faliz-app --app notes
+Icon=accessories-text-editor
+Terminal=false
+Categories=Office;Utility;
+StartupNotify=true

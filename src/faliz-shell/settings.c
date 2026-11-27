@@ -65,7 +65,7 @@ static void activate(GApplication *application, gpointer user_data) {
 
     AdwActionRow *compositor = ADW_ACTION_ROW(adw_action_row_new());
     adw_preferences_row_set_title(ADW_PREFERENCES_ROW(compositor), "Wayland compositor");
-    adw_action_row_set_subtitle(compositor, "sway — active BUILD 02 Wayland compositor");
+    adw_action_row_set_subtitle(compositor, "sway — active BUILD 04.1 Wayland compositor");
     adw_action_row_add_suffix(compositor, gtk_image_new_from_icon_name("emblem-ok-symbolic"));
     adw_preferences_group_add(session_group, GTK_WIDGET(compositor));
 
@@ -108,6 +108,30 @@ static void activate(GApplication *application, gpointer user_data) {
         adw_preferences_group_add(operations, GTK_WIDGET(row));
     }
 
+    AdwPreferencesPage *applications = ADW_PREFERENCES_PAGE(adw_preferences_page_new());
+    adw_preferences_page_set_title(applications, "Applications");
+    adw_preferences_page_set_icon_name(applications, "applications-utilities-symbolic");
+    adw_preferences_window_add(window, applications);
+    AdwPreferencesGroup *native_apps = ADW_PREFERENCES_GROUP(adw_preferences_group_new());
+    adw_preferences_group_set_title(native_apps, "FALIZ native applications");
+    adw_preferences_group_set_description(native_apps, "First-party tools share the FALIZ visual language and report real local system state.");
+    adw_preferences_page_add(applications, native_apps);
+    const char *native_app_list[] = {
+        "FALIZ Files — folders, item opening, and new-folder creation",
+        "FALIZ Notes — local note editing and Documents storage",
+        "FALIZ Calculator — keyboard arithmetic",
+        "FALIZ Screenshot — area and full-screen capture",
+        "FALIZ System Monitor — live load, memory, and storage metrics",
+        "FALIZ Software Store — safe package catalog hand-off",
+        "FALIZ Media Player — VLC-backed local and stream playback",
+    };
+    for (guint i = 0; i < G_N_ELEMENTS(native_app_list); i++) {
+        AdwActionRow *row = ADW_ACTION_ROW(adw_action_row_new());
+        adw_preferences_row_set_title(ADW_PREFERENCES_ROW(row), native_app_list[i]);
+        adw_action_row_add_suffix(row, gtk_image_new_from_icon_name("emblem-ok-symbolic"));
+        adw_preferences_group_add(native_apps, GTK_WIDGET(row));
+    }
+
     AdwPreferencesPage *about = ADW_PREFERENCES_PAGE(adw_preferences_page_new());
     adw_preferences_page_set_title(about, "About FALIZ");
     adw_preferences_page_set_icon_name(about, "help-about-symbolic");
@@ -118,8 +142,8 @@ static void activate(GApplication *application, gpointer user_data) {
     adw_preferences_group_set_description(identity, "A focused Debian-based desktop experience built with GTK4, Libadwaita, and Wayland.");
     adw_preferences_page_add(about, identity);
     AdwActionRow *version = ADW_ACTION_ROW(adw_action_row_new());
-    adw_preferences_row_set_title(ADW_PREFERENCES_ROW(version), "BUILD 04");
-    adw_action_row_set_subtitle(version, "Professional desktop foundation and core application suite");
+    adw_preferences_row_set_title(ADW_PREFERENCES_ROW(version), "BUILD 04.1");
+    adw_action_row_set_subtitle(version, "Professional desktop foundation and FALIZ native application suite");
     adw_preferences_group_add(identity, GTK_WIDGET(version));
 
     AdwPreferencesGroup *credits = ADW_PREFERENCES_GROUP(adw_preferences_group_new());
@@ -138,7 +162,7 @@ static void activate(GApplication *application, gpointer user_data) {
 
 int main(int argc, char **argv) {
     if (argc > 1 && g_strcmp0(argv[1], "--version") == 0) {
-        g_print("FALIZ Settings BUILD 04 0.4.0\n");
+        g_print("FALIZ Settings BUILD 04.1 0.4.1\n");
         return 0;
     }
     AdwApplication *app = adw_application_new(APP_ID, G_APPLICATION_DEFAULT_FLAGS);

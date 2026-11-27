@@ -1,0 +1,9 @@
+[Desktop Entry]
+Type=Application
+Name=FALIZ Files
+Comment=Browse files and folders with FALIZ
+Exec=/usr/local/bin/faliz-app --app files
+Icon=system-file-manager
+Terminal=false
+Categories=System;FileManager;
+StartupNotify=true

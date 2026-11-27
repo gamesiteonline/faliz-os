@@ -1,0 +1,9 @@
+[Desktop Entry]
+Type=Application
+Name=FALIZ System Monitor
+Comment=Monitor live CPU, memory, and storage use
+Exec=/usr/local/bin/faliz-app --app monitor
+Icon=utilities-system-monitor
+Terminal=false
+Categories=System;Monitor;
+StartupNotify=true

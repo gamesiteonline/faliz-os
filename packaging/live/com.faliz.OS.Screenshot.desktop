@@ -1,0 +1,9 @@
+[Desktop Entry]
+Type=Application
+Name=FALIZ Screenshot
+Comment=Capture a screen area or full screen
+Exec=/usr/local/bin/faliz-app --app screenshot
+Icon=applets-screenshooter
+Terminal=false
+Categories=Graphics;Utility;
+StartupNotify=true

@@ -1,0 +1,9 @@
+[Desktop Entry]
+Type=Application
+Name=FALIZ Calculator
+Comment=Perform everyday calculations
+Exec=/usr/local/bin/faliz-app --app calculator
+Icon=accessories-calculator
+Terminal=false
+Categories=Utility;Calculator;
+StartupNotify=true

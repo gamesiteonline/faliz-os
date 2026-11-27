@@ -1,0 +1,9 @@
+[Desktop Entry]
+Type=Application
+Name=FALIZ Media Player
+Comment=Play local media and streams
+Exec=/usr/local/bin/faliz-app --app media
+Icon=multimedia-player
+Terminal=false
+Categories=AudioVideo;Player;
+StartupNotify=true

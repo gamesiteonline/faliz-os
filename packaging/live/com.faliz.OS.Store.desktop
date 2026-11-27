@@ -1,0 +1,9 @@
+[Desktop Entry]
+Type=Application
+Name=FALIZ Software Store
+Comment=Discover and install software safely
+Exec=/usr/local/bin/faliz-app --app store
+Icon=system-software-install
+Terminal=false
+Categories=System;PackageManager;
+StartupNotify=true

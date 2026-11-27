@@ -24,3 +24,12 @@
 - `./scripts/validate.sh` passed and `sha256sum -c` returned `OK`.
 - QEMU software-emulation smoke test remained running for 30 seconds and ended with the expected timeout. KVM and physical/VirtualBox testing remain unavailable or unverified in this environment.
 - Explicitly left graphical login, lock screen, installer, full native application suite, and hardware acceptance testing incomplete.
+
+## 2026-11-27 — BUILD 04.1 native application suite
+
+- Added a first-party `faliz-app` GTK4/Libadwaita application binary with focused modes for FALIZ Files, Notes, Calculator, Screenshot, System Monitor, Software Store, and Media Player.
+- FALIZ Files now browses the home folder, opens selected items with the default application, changes folders, and creates a new folder.
+- FALIZ Notes saves and reloads a local note at `Documents/FALIZ Notes/notes.txt`; FALIZ Calculator supports keyboard expressions using `+`, `-`, `*`, and `/`.
+- FALIZ Screenshot provides area/window capture and full-screen capture into `Pictures/FALIZ Screenshots`; FALIZ System Monitor reads live `/proc` load and memory data plus home filesystem usage.
+- FALIZ Settings now documents the native suite and reports BUILD 04.1. Store and Media Player provide branded, controlled hand-offs to GNOME Software/PolicyKit and VLC rather than silently reimplementing privileged package or codec operations.
+- Added desktop entries for all seven native-app modes, updated the launcher, and added build/validation coverage. Compilation and `scripts/validate.sh` passed; a new ISO has not yet been rebuilt in this milestone.
