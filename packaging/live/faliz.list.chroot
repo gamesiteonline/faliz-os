@@ -43,6 +43,7 @@ gnome-disk-utility
 sudo
 dosfstools
 rsync
+curl
 squashfs-tools
 grub-pc-bin
 grub-efi-amd64-bin

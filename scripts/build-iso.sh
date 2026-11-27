@@ -4,12 +4,14 @@ ROOT=$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)
 BUILD="$ROOT/.build/live"
 DIST="$ROOT/dist"
 BUILD_ID="${FALIZ_BUILD_ID:-04}"
+BUILD_VERSION="${FALIZ_BUILD_VERSION:-0.4.1}"
 ISO_NAME="faliz-os-build-${BUILD_ID}-live-amd64.iso"
 mkdir -p "$DIST"
 for tool in lb debootstrap xorriso cpio isohybrid; do command -v "$tool" >/dev/null || { echo "missing required tool: $tool" >&2; exit 1; }; done
 (cd "$ROOT/src/faliz-shell" && make)
 rm -rf "$BUILD"
-mkdir -p "$BUILD/config/package-lists" "$BUILD/config/hooks" "$BUILD/config/includes.chroot/usr/bin" "$BUILD/config/includes.chroot/usr/local/bin" "$BUILD/config/includes.chroot/usr/share/applications" "$BUILD/config/includes.chroot/usr/share/icons/hicolor/2048x2048/apps" "$BUILD/config/includes.chroot/etc/systemd/user" "$BUILD/config/includes.chroot/etc/profile.d" "$BUILD/config/includes.chroot/etc/sway" "$BUILD/config/includes.chroot/etc/waybar" "$BUILD/config/includes.chroot/usr/share/wayland-sessions" "$BUILD/config/includes.chroot/usr/share/faliz"
+mkdir -p "$BUILD/config/package-lists" "$BUILD/config/hooks" "$BUILD/config/includes.chroot/usr/bin" "$BUILD/config/includes.chroot/usr/local/bin" "$BUILD/config/includes.chroot/usr/share/applications" "$BUILD/config/includes.chroot/usr/share/icons/hicolor/2048x2048/apps" "$BUILD/config/includes.chroot/etc/faliz" "$BUILD/config/includes.chroot/etc/systemd/user" "$BUILD/config/includes.chroot/etc/profile.d" "$BUILD/config/includes.chroot/etc/sway" "$BUILD/config/includes.chroot/etc/waybar" "$BUILD/config/includes.chroot/usr/share/wayland-sessions" "$BUILD/config/includes.chroot/usr/share/faliz"
+printf '%s\n' "$BUILD_VERSION" > "$BUILD/config/includes.chroot/etc/faliz/build-id"
 cp "$ROOT/src/faliz-shell/faliz-shell" "$BUILD/config/includes.chroot/usr/local/bin/faliz-shell"
 cp "$ROOT/src/faliz-shell/faliz-settings" "$BUILD/config/includes.chroot/usr/local/bin/faliz-settings"
 cp "$ROOT/src/faliz-shell/faliz-installer" "$BUILD/config/includes.chroot/usr/local/bin/faliz-installer-ui"

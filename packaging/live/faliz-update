@@ -1,26 +1,153 @@
 #!/bin/sh
 set -eu
 
+FALIZ_VERSION_FILE=${FALIZ_VERSION_FILE:-/etc/faliz/build-id}
+FALIZ_STATE_DIR=${FALIZ_STATE_DIR:-/var/lib/faliz}
+FALIZ_MANIFEST_URL=${FALIZ_MANIFEST_URL:-https://raw.githubusercontent.com/gamesiteonline/faliz-os/master/updates/stable/manifest.json}
+TMP_ROOT=${TMPDIR:-/tmp}/faliz-update.$$
+MANIFEST="$TMP_ROOT/manifest.json"
+BUNDLE="$TMP_ROOT/faliz-update.tar.gz"
+STAGE="$TMP_ROOT/stage"
+
+cleanup() { rm -rf "$TMP_ROOT"; }
+trap cleanup EXIT INT TERM
+
+fail() { echo "FALIZ Update Manager: $*" >&2; exit 1; }
+need_cmd() { command -v "$1" >/dev/null 2>&1 || fail "required command missing: $1"; }
+current_version() {
+  if [ -r "$FALIZ_VERSION_FILE" ]; then
+    sed -n '1p' "$FALIZ_VERSION_FILE"
+  else
+    echo "0.0.0"
+  fi
+}
+json_value() {
+  key=$1
+  file=$2
+  sed -n "s/.*\"$key\"[[:space:]]*:[[:space:]]*\"\([^\"]*\)\".*/\1/p" "$file" | sed -n '1p'
+}
+fetch_manifest() {
+  need_cmd curl
+  mkdir -p "$TMP_ROOT"
+  curl --fail --silent --show-error --location --proto '=https' --tlsv1.2 --max-time 30 "$FALIZ_MANIFEST_URL" -o "$MANIFEST" || fail "could not download the update manifest"
+  grep -q '"version"' "$MANIFEST" || fail "the update manifest is invalid"
+}
+manifest_details() {
+  VERSION=$(json_value version "$MANIFEST")
+  BUNDLE_URL=$(json_value bundle_url "$MANIFEST")
+  BUNDLE_SHA256=$(json_value sha256 "$MANIFEST")
+  NOTES=$(json_value notes "$MANIFEST")
+  [ -n "$VERSION" ] || fail "the update manifest has no version"
+}
+check_update() {
+  fetch_manifest
+  manifest_details
+  INSTALLED=$(current_version)
+  echo "Installed FALIZ version: $INSTALLED"
+  echo "Available FALIZ version: $VERSION"
+  if [ "$VERSION" = "$INSTALLED" ]; then
+    echo "FALIZ is up to date."
+    [ -n "$NOTES" ] && echo "Release notes: $NOTES"
+    return 0
+  fi
+  if [ -z "$BUNDLE_URL" ] || [ -z "$BUNDLE_SHA256" ] || [ "$BUNDLE_SHA256" = "PUBLISH_SHA256_AFTER_RELEASE_UPLOAD" ]; then
+    echo "A newer manifest is published, but its signed component bundle is not ready yet."
+    return 0
+  fi
+  echo "Update available: FALIZ $VERSION"
+  [ -n "$NOTES" ] && echo "Release notes: $NOTES"
+  echo "Run: faliz-update --apply --confirm"
+}
+validate_bundle() {
+  need_cmd tar
+  need_cmd sha256sum
+  expected=$1
+  actual=$(sha256sum "$BUNDLE" | awk '{print $1}')
+  [ "$actual" = "$expected" ] || fail "bundle checksum mismatch; no files were changed"
+  mkdir -p "$STAGE"
+  tar -tzf "$BUNDLE" > "$TMP_ROOT/entries"
+  while IFS= read -r item; do
+    case "$item" in
+      usr/local/bin/faliz-shell|usr/local/bin/faliz-settings|usr/local/bin/faliz-app|usr/local/bin/faliz-update|usr/share/faliz/faliz.css|usr/share/applications/com.faliz.OS.*.desktop|etc/faliz/build-id) ;;
+      *) fail "bundle contains an unapproved path: $item" ;;
+    esac
+  done < "$TMP_ROOT/entries"
+  tar -xzf "$BUNDLE" -C "$STAGE" --no-same-owner --no-same-permissions
+}
+install_bundle() {
+  [ "$(id -u)" -eq 0 ] || fail "apply requires administrator privileges; run it through pkexec or as root"
+  [ -n "$BUNDLE_URL" ] || fail "the manifest has no component bundle URL"
+  [ -n "$BUNDLE_SHA256" ] || fail "the manifest has no component checksum"
+  need_cmd install
+  need_cmd curl
+  mkdir -p "$TMP_ROOT"
+  curl --fail --silent --show-error --location --proto '=https' --tlsv1.2 --max-time 120 "$BUNDLE_URL" -o "$BUNDLE" || fail "could not download the FALIZ component bundle"
+  validate_bundle "$BUNDLE_SHA256"
+  mkdir -p "$FALIZ_STATE_DIR/backups/$VERSION"
+  for relative in $(tar -tzf "$BUNDLE"); do
+    source="$STAGE/$relative"
+    target="/$relative"
+    [ -f "$source" ] || fail "bundle entry is not a regular file: $relative"
+    if [ -e "$target" ]; then
+      install -D -m 0644 "$target" "$FALIZ_STATE_DIR/backups/$VERSION/$relative"
+    fi
+    mode=0644
+    case "$relative" in usr/local/bin/*) mode=0755 ;; esac
+    install -D -m "$mode" "$source" "$target"
+  done
+  printf '%s\n' "$VERSION" > "$FALIZ_VERSION_FILE"
+  echo "FALIZ $VERSION installed in place. Reopen affected applications to use the update."
+}
+apply_update() {
+  [ "${2:-}" = "--confirm" ] || fail "refusing changes; use: faliz-update --apply --confirm"
+  fetch_manifest
+  manifest_details
+  INSTALLED=$(current_version)
+  [ "$VERSION" != "$INSTALLED" ] || { echo "FALIZ is already up to date."; return 0; }
+  install_bundle
+}
+rollback() {
+  [ "$(id -u)" -eq 0 ] || fail "rollback requires administrator privileges"
+  target=${2:-}
+  [ -n "$target" ] || fail "use: faliz-update --rollback VERSION"
+  backup="$FALIZ_STATE_DIR/backups/$target"
+  [ -d "$backup" ] || fail "no rollback backup exists for $target"
+  find "$backup" -type f | while IFS= read -r source; do
+    relative=${source#"$backup/"}
+    install -D -m 0644 "$source" "/$relative"
+  done
+  echo "FALIZ files restored from backup $target. Restart affected applications."
+}
+
 case "${1:-}" in
-  --check)
-    echo "FALIZ Update Manager: checking available updates"
-    apt-get -s -o APT::Get::Assume-Yes=false upgrade
-    ;;
-  --apply)
-    [ "${2:-}" = "--confirm" ] || {
-      echo "Refusing update: run faliz-update --apply --confirm." >&2
-      exit 2
-    }
-    exec apt-get update && apt-get upgrade
+  --check) check_update ;;
+  --apply) apply_update "$@" ;;
+  --rollback) rollback "$@" ;;
+  --packages)
+    need_cmd apt-get
+    case "${2:-}" in
+      --check) apt-get -s -o APT::Get::Assume-Yes=false upgrade ;;
+      --apply) [ "${3:-}" = "--confirm" ] || fail "use: faliz-update --packages --apply --confirm"; exec apt-get update && apt-get upgrade ;;
+      *) echo "Use --packages --check or --packages --apply --confirm"; exit 2 ;;
+    esac
     ;;
   *)
-    cat <<'EOF'
-FALIZ Update Manager foundation
+    cat <<EOF
+FALIZ Update Manager
 
   faliz-update --check
   faliz-update --apply --confirm
+  faliz-update --rollback VERSION
+  faliz-update --packages --check
+  faliz-update --packages --apply --confirm
 
-The check mode is read-only. Apply mode requires explicit confirmation.
+FALIZ component updates download a checksum-verified bundle from the configured
+release channel, back up replaceable FALIZ files, and update them in place.
+The ISO does not need to be reinstalled. Apply and package operations require
+explicit confirmation; check mode is read-only.
+
+Channel: $FALIZ_MANIFEST_URL
+Installed: $(current_version)
 EOF
     ;;
 esac

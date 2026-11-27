@@ -48,6 +48,26 @@ The expected SHA-256 digest for BUILD 04.1 is:
 f6e18b27f2b4f9c60dd2ca90c74447931f216e38fcc313c0425ec87ea347530d
 ```
 
+## In-place updates after installation
+
+FALIZ includes an **FALIZ Update Manager** for installed systems. Future FALIZ releases can publish a checksum-verified component bundle containing the shell, Settings, native applications, desktop entries, styles, and updater. The installed system downloads that bundle and updates those components in place; it does **not** overwrite the whole root filesystem and does **not** require reinstalling the ISO.
+
+Check for a release without changing anything:
+
+```bash
+faliz-update --check
+```
+
+Apply a published FALIZ component update only after reviewing the version and release notes:
+
+```bash
+sudo faliz-update --apply --confirm
+```
+
+The updater verifies the bundle SHA-256 checksum, rejects archive paths outside the approved FALIZ component list, backs up replaced files under `/var/lib/faliz/backups/`, and supports rollback with `faliz-update --rollback VERSION`. Debian package updates remain a separate, explicit operation using `faliz-update --packages --check` and `faliz-update --packages --apply --confirm`. The ISO itself remains a fresh-install artifact; it is no longer the only way to receive FALIZ application and desktop changes.
+
+Release maintainers can create a bundle with `scripts/create-update-bundle.sh VERSION`, upload the generated archive to a GitHub Release, and publish its checksum and asset URL in `updates/stable/manifest.json`.
+
 ## Install and boot FALIZ OS from a USB drive
 
 BUILD 03 is a bootable live ISO. The steps below create a USB device that boots FALIZ OS so you can test the desktop on a PC without immediately changing the computer's internal disk.

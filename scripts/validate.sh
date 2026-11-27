@@ -14,6 +14,10 @@ for desktop in Files Store Notes Calculator Screenshot Monitor Media; do
 done
 test -x "$ROOT/src/faliz-shell/faliz-app"
 test -x "$ROOT/packaging/live/faliz-installer"
+test -x "$ROOT/packaging/live/faliz-update"
+sh -n "$ROOT/packaging/live/faliz-update"
+bash -n "$ROOT/scripts/create-update-bundle.sh"
+python3 -m json.tool "$ROOT/updates/stable/manifest.json" >/dev/null
 "$ROOT/packaging/live/faliz-installer" --dry-run --target /dev/faliz-test-target | grep -q 'No partitions, filesystems, bootloaders, or disks will be changed.'
 if "$ROOT/packaging/live/faliz-installer" --install --target /dev/faliz-test-target --confirm /dev/faliz-test-target; then
   echo 'guarded installer unexpectedly performed an install' >&2
